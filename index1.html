@@ -847,20 +847,20 @@
             }
         }
 
-        // Fonction pour nettoyer les données avant export (utilisée par Partage et Download)
+        // Fonction centralisée pour un format d'export unique et compatible
         function getCleanDataForExport() {
             return places.map(p => ({
                 id: p.id,
-                nom_lieu: p.nom_lieu,
-                type_lieu: p.type_lieu,
+                nom_lieu: p.nom_lieu || p.nom, // Compatible avec l'ancien format interne si migration incomplète
+                type_lieu: p.type_lieu || p.type,
                 adresse: p.adresse || "",
                 ville: p.ville || "",
-                code_entree_principal: p.code_entree_principal,
-                code_secondaire: p.code_secondaire || "",
-                commentaire: p.commentaire || "",
-                latitude: p.latitude,
-                longitude: p.longitude,
-                date_maj: p.date_maj
+                code_entree_principal: p.code_entree_principal || p.code1,
+                code_secondaire: p.code_secondaire || p.code2 || "",
+                commentaire: p.commentaire || p.note || "",
+                latitude: p.latitude || p.lat,
+                longitude: p.longitude || p.lon,
+                date_maj: p.date_maj || p.updated || new Date().toISOString()
             }));
         }
 
@@ -914,14 +914,37 @@
             reader.onload = function(e) {
                 try {
                     const json = JSON.parse(e.target.result);
-                    if(!Array.isArray(json)) throw new Error("Format invalide");
+                    if(!Array.isArray(json)) throw new Error("Format invalide : le fichier doit être une liste.");
                     
-                    const isValid = json.some(item => item.nom_lieu || item.code_entree_principal);
-                    if (!isValid) throw new Error("Structure JSON incompatible");
+                    // Validation plus souple : accepte soit l'ancien format (nom), soit le nouveau (nom_lieu)
+                    const isValid = json.some(item => item.nom_lieu || item.nom || item.code_entree_principal || item.code1);
+                    if (!isValid) throw new Error("Structure JSON incompatible ou fichier vide.");
+
+                    // Normalisation des données importées (Conversion ancien -> nouveau format si nécessaire)
+                    const normalizedJson = json.map(p => {
+                        if (p.nom && !p.nom_lieu) {
+                            // C'est un ancien format, on convertit
+                            return {
+                                id: p.id,
+                                nom_lieu: p.nom,
+                                type_lieu: p.type === 'EHPAD' ? 'Maison de retraite / EHPAD' : p.type,
+                                adresse: p.adresse || "",
+                                ville: p.ville || "",
+                                code_entree_principal: p.code1 || "",
+                                code_secondaire: p.code2 || "",
+                                commentaire: p.note || "",
+                                latitude: p.lat,
+                                longitude: p.lon,
+                                date_maj: p.updated || new Date().toISOString()
+                            };
+                        }
+                        // C'est déjà le bon format
+                        return p;
+                    });
 
                     if (importMode === 'replace') {
-                        if(confirm(`⚠️ ATTENTION : Vous allez remplacer vos ${places.length} lieux par les ${json.length} lieux du fichier. Continuer ?`)) {
-                            places = json;
+                        if(confirm(`⚠️ ATTENTION : Vous allez remplacer vos ${places.length} lieux par les ${normalizedJson.length} lieux du fichier. Continuer ?`)) {
+                            places = normalizedJson;
                             saveDB();
                             showToast(`Base remplacée : ${places.length} lieux.`);
                             filterAndRenderPlaces();
@@ -930,7 +953,7 @@
                         let addedCount = 0;
                         const existingIds = new Set(places.map(p => p.id));
                         
-                        json.forEach(newItem => {
+                        normalizedJson.forEach(newItem => {
                             if (!existingIds.has(newItem.id)) {
                                 places.push(newItem);
                                 addedCount++;
