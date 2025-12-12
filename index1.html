@@ -869,13 +869,32 @@
         }
 
         function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(places));
+            // Sécuriser l'export pour ne garder que les champs officiels et utiliser un Blob (plus robuste)
+            const cleanData = places.map(p => ({
+                id: p.id,
+                nom_lieu: p.nom_lieu,
+                type_lieu: p.type_lieu,
+                adresse: p.adresse || "",
+                ville: p.ville || "",
+                code_entree_principal: p.code_entree_principal,
+                code_secondaire: p.code_secondaire || "",
+                commentaire: p.commentaire || "",
+                latitude: p.latitude,
+                longitude: p.longitude,
+                date_maj: p.date_maj
+            }));
+
+            const dataStr = JSON.stringify(cleanData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
             const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("href", url);
             dlAnchor.setAttribute("download", `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`);
             document.body.appendChild(dlAnchor);
             dlAnchor.click();
-            dlAnchor.remove();
+            document.body.removeChild(dlAnchor);
+            URL.revokeObjectURL(url);
         }
 
         function triggerImport(mode) {
