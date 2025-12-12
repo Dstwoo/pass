@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#e63946">
+    <title>Carnet de codes Ambulancier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables et Thème --- */
+        :root {
+            /* Thème Clair (Défaut) */
+            --color-primary: #e63946;
+            --color-secondary: #457b9d;
+            --color-bg: #f1faee;
+            --color-card-bg: #ffffff;
+            --color-text: #1d3557;
+            --color-text-light: #666;
+            --color-code-bg: #f8f8f8;
+            --color-success: #2a9d8f;
+            --color-warning: #f77f00;
+            --padding-base: 1rem;
+            --button-size: 3rem;
+            --radius: 0.75rem;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Thème Sombre (Activé via data-theme="dark") */
+        [data-theme="dark"] {
+            --color-primary: #ff5a68;
+            --color-secondary: #6fa2c5;
+            --color-bg: #121212;
+            --color-card-bg: #1e1e1e;
+            --color-text: #e0e0e0;
+            --color-text-light: #aaa;
+            --color-code-bg: #2d2d2d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            padding-bottom: 80px; /* Espace pour le FAB */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- En-tête --- */
+        .header {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Espace entre le titre et le bouton */
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0 0.5rem;
+            line-height: 1;
+        }
+
+        /* --- Layout --- */
+        .container {
+            padding: var(--padding-base);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* --- Formulaires & Boutons --- */
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            background-color: var(--color-card-bg);
+            color: var(--color-text);
+        }
+
+        .button {
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none; /* Pour les liens stylisés en boutons */
+        }
+
+        .button:active { transform: scale(0.98); }
+
+        .btn-primary { background-color: var(--color-primary); color: white; }
+        .btn-secondary { background-color: var(--color-secondary); color: white; }
+        .btn-success { background-color: var(--color-success); color: white; }
+        .btn-danger { background-color: var(--color-warning); color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid currentColor; color: inherit; }
+        .btn-whatsapp { background-color: #25D366; color: white; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        .btn-block { width: 100%; }
+
+        /* --- Cartes et Sections --- */
+        .card {
+            background-color: var(--color-card-bg);
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .section-header {
+            border-bottom: 1px solid var(--color-secondary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            color: var(--color-secondary);
+            font-weight: 600;
+        }
+
+        /* --- Liste des Lieux --- */
+        .place-card {
+            background-color: var(--color-card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border-left: 5px solid var(--color-primary);
+            transition: background-color 0.3s;
+        }
+
+        .place-content { padding: 1rem; }
+
+        .place-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .place-title h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--color-text);
+        }
+        .place-city {
+            color: var(--color-text-light);
+            font-size: 0.9rem;
+        }
+
+        .place-meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .badge {
+            background-color: var(--color-secondary);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .distance-badge {
+            margin-top: 4px;
+            font-weight: bold;
+            color: var(--color-primary);
+            font-size: 0.9rem;
+        }
+
+        .codes-block {
+            background-color: var(--color-code-bg);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin: 0.75rem 0;
+            font-family: monospace;
+            border: 1px dashed #ccc;
+        }
+
+        .code-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .code-row:last-child { margin-bottom: 0; }
+        .code-label { font-weight: bold; color: var(--color-text-light); font-size: 0.9rem; }
+        .code-value { font-size: 1.1rem; color: var(--color-text); font-weight: 700; }
+
+        .place-actions {
+            background-color: rgba(0,0,0,0.03);
+            padding: 0.5rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            white-space: nowrap; /* Empêche le retour à la ligne des boutons */
+        }
+
+        /* --- Modale --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: var(--color-card-bg);
+            margin: 10% auto;
+            padding: 0;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .modal-header {
+            background-color: var(--color-secondary);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--radius) var(--radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body { padding: 1.5rem; }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* --- FAB (Floating Action Button) --- */
+        .fab {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background-color: var(--color-primary);
+            color: white;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4);
+            border: none;
+            cursor: pointer;
+            z-index: 90;
+            transition: transform 0.2s;
+        }
+        .fab:hover { transform: scale(1.1); }
+
+        /* --- Toast Notification --- */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 50px;
+            padding: 16px;
+            position: fixed;
+            z-index: 2000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-size: 0.9rem;
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+        /* Utilitaires */
+        .hidden { display: none; }
+        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+    </style>
+    
+    <!-- Script Dark Mode Init immédiat -->
+    <script>
+        (function() {
+            const storedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (storedTheme === 'dark' || (!storedTheme && systemDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div style="width: 2rem;"></div> <!-- Spacer pour centrer le titre -->
+        <div class="header-title">
+            <span>🚑</span>
+            <span>Carnet Ambulancier</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Changer le thème">
+            🌓
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Status & GPS -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div id="gps-status" style="font-size: 0.9rem; color: var(--color-text-light);">
+                    🔍 Recherche GPS...
+                </div>
+                <button class="button btn-secondary btn-sm" onclick="updateLocation()">Actualiser</button>
+            </div>
+        </div>
+
+        <!-- Recherche -->
+        <div class="card">
+            <input type="text" id="search-input" placeholder="Rechercher (nom, ville, digicode...)" oninput="filterPlaces()">
+            <div class="filter-grid">
+                <select id="type-filter" onchange="filterPlaces()">
+                    <option value="">Tous types</option>
+                    <option value="Hôpital">Hôpital</option>
+                    <option value="Clinique">Clinique</option>
+                    <option value="Résidence">Résidence</option>
+                    <option value="EHPAD">EHPAD</option>
+                    <option value="Autre">Autre</option>
+                </select>
+                <select id="dist-filter" onchange="filterPlaces()">
+                    <option value="0">Toute distance</option>
+                    <option value="2"> < 2 km</option>
+                    <option value="10"> < 10 km</option>
+                    <option value="50"> < 50 km</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Outils Data -->
+        <div style="text-align: center; margin-bottom: 1rem;">
+             <button class="button btn-outline btn-sm" onclick="toggleDataTools()">
+                ⚙️ Partage & Sauvegarde
+             </button>
+        </div>
+        <div id="data-tools" class="card hidden">
+            <div class="section-header">Gestion des Données</div>
+            <p style="font-size: 0.8rem; margin-bottom:1rem">
+                Partagez votre base avec vos collègues ou sauvegardez-la.
+            </p>
+            
+            <div style="display:flex; flex-direction:column; gap:0.5rem">
+                <!-- Export / Partage Global -->
+                <div style="display:flex; gap:0.5rem">
+                    <button class="button btn-whatsapp btn-block" onclick="shareGlobalData()">
+                        📤 Partager la base
+                    </button>
+                    <button class="button btn-secondary btn-block" onclick="exportData()">
+                        💾 Télécharger
+                    </button>
+                </div>
+
+                <hr style="width:100%; border:0; border-top:1px dashed #ccc; margin: 0.5rem 0;">
+
+                <!-- Import -->
+                <p style="font-size:0.8rem; margin:0; font-weight:bold">Importer un fichier :</p>
+                <div style="display:flex; gap:0.5rem">
+                    <button class="button btn-primary btn-block" onclick="triggerImport('merge')">
+                        🔄 Fusionner (Sans écraser)
+                    </button>
+                    <button class="button btn-danger btn-block" onclick="triggerImport('replace')">
+                        ⚠️ Remplacer tout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Input file caché -->
+            <input type="file" id="import-file" accept=".json" style="display: none;" onchange="processImportFile(this)">
+        </div>
+
+        <!-- Liste -->
+        <div id="places-list"></div>
+        <div id="empty-state" class="hidden" style="text-align: center; padding: 2rem; color: var(--color-text-light);">
+            Aucun lieu trouvé.
+        </div>
+    </div>
+
+    <!-- FAB Add -->
+    <button class="fab" onclick="openModal()">+</button>
+
+    <!-- Modal Formulaire -->
+    <div id="place-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-title">Nouveau Lieu</span>
+                <span onclick="closeModal()" style="cursor:pointer; font-size: 1.5rem;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="place-form" onsubmit="handleFormSubmit(event)">
+                    <input type="hidden" id="place-id">
+                    
+                    <label>Nom & Type *</label>
+                    <input type="text" id="nom" required placeholder="Ex: Résidence Les Lilas">
+                    <select id="type" required>
+                        <option value="Hôpital">Hôpital</option>
+                        <option value="Clinique">Clinique</option>
+                        <option value="Résidence" selected>Résidence</option>
+                        <option value="EHPAD">EHPAD</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+
+                    <label>Adresse & Ville</label>
+                    <input type="text" id="adresse" placeholder="12 rue de la Paix">
+                    <input type="text" id="ville" placeholder="Paris">
+
+                    <label style="color: var(--color-primary); font-weight:bold;">Codes d'accès *</label>
+                    <div style="display:flex; gap:0.5rem">
+                        <input type="text" id="code1" required placeholder="Principal (Portail)" style="font-weight:bold;">
+                        <input type="text" id="code2" placeholder="Secondaire (Hall)">
+                    </div>
+
+                    <label>Note / Commentaire</label>
+                    <textarea id="note" rows="2" placeholder="Ex: Batiment B, 3ème étage, ascenseur gauche"></textarea>
+
+                    <label>Position GPS</label>
+                    <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                        <input type="number" id="lat" step="any" placeholder="Lat">
+                        <input type="number" id="lon" step="any" placeholder="Lon">
+                        <button type="button" class="button btn-secondary" onclick="fillGPS()">📍 Moi</button>
+                    </div>
+
+                    <div style="display:flex; gap:1rem; margin-top:1rem;">
+                        <button type="button" class="button btn-outline btn-block" onclick="closeModal()">Annuler</button>
+                        <button type="submit" class="button btn-success btn-block">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast">Notification</div>
+
+    <script>
+        // --- GESTION DU THEME ---
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+        }
+
+        // --- ETAT GLOBAL ---
+        let places = [];
+        let currentPos = null;
+        let storageAvailable = true;
+        let importMode = 'merge'; // 'merge' ou 'replace'
+
+        // --- SAFE STORAGE INIT ---
+        try {
+            const stored = localStorage.getItem('ambu_codes_db');
+            places = stored ? JSON.parse(stored) : [];
+        } catch (e) {
+            console.error("Erreur d'accès au LocalStorage:", e);
+            storageAvailable = false;
+        }
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!storageAvailable) showToast("⚠️ Mode Privé : Pas de sauvegarde !");
+            updateLocation();
+            renderList();
+        });
+
+        // --- GPS LOGIC ---
+        function updateLocation() {
+            const status = document.getElementById('gps-status');
+            status.innerHTML = "📡 Recherche satellite...";
+            
+            if (!navigator.geolocation) {
+                status.innerHTML = "❌ GPS non supporté";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    currentPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                    status.innerHTML = `✅ GPS OK (Précision: ${Math.round(pos.coords.accuracy)}m)`;
+                    filterPlaces();
+                },
+                (err) => {
+                    console.error(err);
+                    status.innerHTML = "⚠️ GPS non disponible";
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            if (!lat1 || !lon1 || !lat2 || !lon2) return Infinity;
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function fillGPS() {
+            if(currentPos) {
+                document.getElementById('lat').value = currentPos.lat.toFixed(6);
+                document.getElementById('lon').value = currentPos.lon.toFixed(6);
+            } else {
+                updateLocation();
+                showToast("Réessayez la localisation...");
+            }
+        }
+
+        // --- CORE LOGIC ---
+        function saveDB() {
+            if (storageAvailable) {
+                try {
+                    localStorage.setItem('ambu_codes_db', JSON.stringify(places));
+                } catch (e) {
+                    showToast("Erreur de sauvegarde !");
+                }
+            }
+            renderList();
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('place-id').value;
+            const data = {
+                id: id || Date.now().toString(),
+                nom: document.getElementById('nom').value,
+                type: document.getElementById('type').value,
+                adresse: document.getElementById('adresse').value,
+                ville: document.getElementById('ville').value,
+                code1: document.getElementById('code1').value,
+                code2: document.getElementById('code2').value,
+                note: document.getElementById('note').value,
+                lat: parseFloat(document.getElementById('lat').value) || null,
+                lon: parseFloat(document.getElementById('lon').value) || null,
+                updated: new Date().toISOString()
+            };
+
+            if (id) {
+                const idx = places.findIndex(p => p.id === id);
+                places[idx] = data;
+                showToast("Lieu modifié");
+            } else {
+                places.push(data);
+                showToast("Lieu ajouté");
+            }
+            
+            saveDB();
+            closeModal();
+        }
+
+        function deletePlace(id) {
+            if(confirm("Supprimer définitivement ce lieu ?")) {
+                places = places.filter(p => p.id !== id);
+                saveDB();
+                showToast("Lieu supprimé");
+            }
+        }
+
+        function editPlace(id) {
+            const p = places.find(place => place.id === id);
+            if(!p) return;
+            document.getElementById('place-id').value = p.id;
+            document.getElementById('nom').value = p.nom;
+            document.getElementById('type').value = p.type;
+            document.getElementById('adresse').value = p.adresse || '';
+            document.getElementById('ville').value = p.ville || '';
+            document.getElementById('code1').value = p.code1 || '';
+            document.getElementById('code2').value = p.code2 || '';
+            document.getElementById('note').value = p.note || '';
+            document.getElementById('lat').value = p.lat || '';
+            document.getElementById('lon').value = p.lon || '';
+            document.getElementById('modal-title').innerText = "Modifier Lieu";
+            document.getElementById('place-modal').style.display = 'block';
+        }
+
+        // --- PARTAGE & EXPORT AVANCE ---
+
+        function toggleDataTools() {
+            document.getElementById('data-tools').classList.toggle('hidden');
+        }
+
+        // 1. Partager un lieu unique (WhatsApp / SMS)
+        function sharePlace(id) {
+            const p = places.find(place => place.id === id);
+            if (!p) return;
+
+            const mapLink = (p.lat && p.lon) 
+                ? `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}` 
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
+            
+            const text = `🚑 *INFO ACCÈS AMBULANCE* 🚑\n\n` +
+                         `🏥 *${p.nom}* (${p.type})\n` +
+                         `📍 ${p.adresse}, ${p.ville}\n` +
+                         `🔢 *CODE:* ${p.code1}\n` +
+                         (p.code2 ? `🔢 Code 2: ${p.code2}\n` : '') +
+                         (p.note ? `📝 Note: ${p.note}\n` : '') +
+                         `\n🗺️ GPS: ${mapLink}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: `Code ${p.nom}`,
+                    text: text
+                }).catch(console.error);
+            } else {
+                // Fallback: Copier + Ouvrir WhatsApp Web si desktop
+                copyToClipboard(text);
+                showToast("Infos copiées !");
+                // Optionnel: window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+            }
+        }
+
+        // 2. Partager toute la base (Fichier JSON via Share Sheet)
+        function shareGlobalData() {
+            const dataStr = JSON.stringify(places, null, 2);
+            const fileName = `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
+            const file = new File([dataStr], fileName, { type: 'application/json' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    files: [file],
+                    title: 'Sauvegarde Codes Ambulancier',
+                    text: 'Voici ma base de codes mise à jour.'
+                }).then(() => showToast("Fichier partagé !"))
+                  .catch((err) => {
+                      console.error(err);
+                      exportData(); // Fallback
+                  });
+            } else {
+                // Fallback classique
+                exportData();
+                showToast("Partage fichier non supporté, téléchargement lancé.");
+            }
+        }
+
+        // 3. Export Classique (Téléchargement)
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(places));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `codes_ambu_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        // 4. Import Intelligent (Fusion ou Remplacement)
+        function triggerImport(mode) {
+            importMode = mode;
+            document.getElementById('import-file').click();
+        }
+
+        function processImportFile(input) {
+            const file = input.files[0];
+            if(!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    if(!Array.isArray(json)) throw new Error("Format invalide");
+
+                    if (importMode === 'replace') {
+                        if(confirm(`⚠️ ATTENTION : Vous allez remplacer vos ${places.length} lieux par les ${json.length} lieux du fichier. Continuer ?`)) {
+                            places = json;
+                            saveDB();
+                            showToast(`Base remplacée : ${places.length} lieux.`);
+                        }
+                    } else {
+                        // MODE FUSION (MERGE)
+                        let addedCount = 0;
+                        const existingIds = new Set(places.map(p => p.id));
+                        
+                        json.forEach(newItem => {
+                            if (!existingIds.has(newItem.id)) {
+                                places.push(newItem);
+                                addedCount++;
+                            } else {
+                                // Optionnel : Si l'ID existe, on pourrait vérifier la date de modif
+                                // Pour l'instant, on garde la version locale par sécurité
+                            }
+                        });
+                        
+                        saveDB();
+                        showToast(`Fusion terminée : +${addedCount} nouveaux lieux.`);
+                    }
+                } catch(ex) { 
+                    alert("Erreur de lecture du fichier JSON."); 
+                }
+                input.value = ''; // Reset input
+            };
+            reader.readAsText(file);
+        }
+
+        // --- RENDER & FILTER ---
+        function filterPlaces() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const type = document.getElementById('type-filter').value;
+            const maxDist = parseFloat(document.getElementById('dist-filter').value);
+
+            const filtered = places.map(p => {
+                const dist = (currentPos && p.lat) ? getDistance(currentPos.lat, currentPos.lon, p.lat, p.lon) : Infinity;
+                return { ...p, _dist: dist };
+            }).filter(p => {
+                const matchTerm = p.nom.toLowerCase().includes(term) || (p.ville||'').toLowerCase().includes(term);
+                const matchType = !type || p.type === type;
+                const matchDist = maxDist === 0 || p._dist <= maxDist;
+                return matchTerm && matchType && matchDist;
+            });
+
+            filtered.sort((a, b) => {
+                if (currentPos && a._dist !== Infinity && b._dist !== Infinity) return a._dist - b._dist;
+                return a.nom.localeCompare(b.nom);
+            });
+
+            renderList(filtered);
+        }
+
+        function renderList(list = null) {
+            const data = list || places;
+            const container = document.getElementById('places-list');
+            container.innerHTML = '';
+            
+            if(data.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('empty-state').classList.add('hidden');
+            }
+
+            data.forEach(p => {
+                const distDisplay = p._dist && p._dist !== Infinity 
+                    ? (p._dist < 1 ? Math.round(p._dist*1000)+' m' : p._dist.toFixed(1)+' km') 
+                    : '';
+
+                const wazeUrl = (p.lat && p.lon) ? `https://waze.com/ul?ll=${p.lat},${p.lon}&navigate=yes` : null;
+                const mapsUrl = (p.lat && p.lon) 
+                    ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}` 
+                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
+
+                const html = `
+                <div class="place-card">
+                    <div class="place-content">
+                        <div class="place-header">
+                            <div class="place-title">
+                                <h3>${p.nom}</h3>
+                                <div class="place-city">${p.adresse ? p.adresse + ', ' : ''} ${p.ville}</div>
+                            </div>
+                            <div class="place-meta">
+                                <span class="badge">${p.type}</span>
+                                <span class="distance-badge">${distDisplay}</span>
+                            </div>
+                        </div>
+
+                        <div class="codes-block">
+                            <div class="code-row">
+                                <span class="code-label">Portail / Principal</span>
+                                <span class="code-value" onclick="copyToClipboard('${p.code1}')">
+                                    ${p.code1} <span style="font-size:0.7rem; font-weight:normal">📋</span>
+                                </span>
+                            </div>
+                            ${p.code2 ? `
+                            <div class="code-row">
+                                <span class="code-label">Intérieur / Bis</span>
+                                <span class="code-value" onclick="copyToClipboard('${p.code2}')">
+                                    ${p.code2} <span style="font-size:0.7rem; font-weight:normal">📋</span>
+                                </span>
+                            </div>` : ''}
+                        </div>
+
+                        ${p.note ? `<div style="font-style:italic; font-size:0.9rem; color:var(--color-text-light); margin-bottom:0.5rem">📝 ${p.note}</div>` : ''}
+                    </div>
+
+                    <div class="place-actions">
+                        <button onclick="sharePlace('${p.id}')" class="button btn-sm btn-whatsapp">📤 Partager</button>
+                        ${wazeUrl ? `<a href="${wazeUrl}" target="_blank" class="button btn-sm btn-primary">🚙 Waze</a>` : ''}
+                        <a href="${mapsUrl}" target="_blank" class="button btn-sm btn-secondary">🗺️ Maps</a>
+                        <button onclick="editPlace('${p.id}')" class="button btn-sm btn-outline">✏️</button>
+                        <button onclick="deletePlace('${p.id}')" class="button btn-sm btn-danger">🗑️</button>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        // --- UTILS ---
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Copié !");
+            } catch (err) {
+                showToast("Erreur copie");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showToast(msg) {
+            const x = document.getElementById("toast");
+            x.className = "show";
+            x.innerText = msg;
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        // Modal
+        function openModal() {
+            document.getElementById('place-form').reset();
+            document.getElementById('place-id').value = '';
+            document.getElementById('modal-title').innerText = "Nouveau Lieu";
+            document.getElementById('place-modal').style.display = 'block';
+            fillGPS();
+        }
+        function closeModal() {
+            document.getElementById('place-modal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('place-modal')) closeModal();
+        }
+    </script>
+</body>
+</html>
