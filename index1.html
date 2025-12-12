@@ -497,15 +497,15 @@
         }
 
         // --- CONSTANTES ET ETAT ---
-        const R = 6371; // Rayon de la Terre en kilomètres
-        let places = [];
-        let currentPosition = null;
-        let storageAvailable = true;
-        let importMode = 'merge'; 
+        // Utilisation de var pour éviter l'erreur "already declared" lors des rechargements
+        var places = [];
+        var currentPosition = null;
+        var storageAvailable = true;
+        var importMode = 'merge'; 
 
         // Elements DOM pour le GPS
-        const locationTextEl = document.getElementById('location-text');
-        const lastUpdateTextEl = document.getElementById('last-update-text');
+        var locationTextEl = document.getElementById('location-text');
+        var lastUpdateTextEl = document.getElementById('last-update-text');
 
         // --- SAFE STORAGE INIT ---
         try {
@@ -557,6 +557,7 @@
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Rayon de la Terre déplacé ici pour éviter les erreurs globales
             if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) {
                 return Infinity;
             }
@@ -710,7 +711,9 @@
 
         // --- RENDER & FILTER ---
         function formatDistance(km) {
-            if (km === Infinity) return '<span class="distance-info">--</span>';
+            if (typeof km !== 'number' || isNaN(km) || km === Infinity) {
+                return '<span class="distance-info">--</span>';
+            }
             if (km < 1) return `${Math.round(km * 1000)} m`;
             return `${km.toFixed(1)} km`;
         }
