@@ -847,8 +847,26 @@
             }
         }
 
+        // Fonction pour nettoyer les données avant export (utilisée par Partage et Download)
+        function getCleanDataForExport() {
+            return places.map(p => ({
+                id: p.id,
+                nom_lieu: p.nom_lieu,
+                type_lieu: p.type_lieu,
+                adresse: p.adresse || "",
+                ville: p.ville || "",
+                code_entree_principal: p.code_entree_principal,
+                code_secondaire: p.code_secondaire || "",
+                commentaire: p.commentaire || "",
+                latitude: p.latitude,
+                longitude: p.longitude,
+                date_maj: p.date_maj
+            }));
+        }
+
         function shareGlobalData() {
-            const dataStr = JSON.stringify(places, null, 2);
+            const cleanData = getCleanDataForExport();
+            const dataStr = JSON.stringify(cleanData, null, 2);
             const fileName = `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
             const file = new File([dataStr], fileName, { type: 'application/json' });
 
@@ -869,21 +887,7 @@
         }
 
         function exportData() {
-            // Sécuriser l'export pour ne garder que les champs officiels et utiliser un Blob (plus robuste)
-            const cleanData = places.map(p => ({
-                id: p.id,
-                nom_lieu: p.nom_lieu,
-                type_lieu: p.type_lieu,
-                adresse: p.adresse || "",
-                ville: p.ville || "",
-                code_entree_principal: p.code_entree_principal,
-                code_secondaire: p.code_secondaire || "",
-                commentaire: p.commentaire || "",
-                latitude: p.latitude,
-                longitude: p.longitude,
-                date_maj: p.date_maj
-            }));
-
+            const cleanData = getCleanDataForExport();
             const dataStr = JSON.stringify(cleanData, null, 2);
             const blob = new Blob([dataStr], { type: "application/json" });
             const url = URL.createObjectURL(blob);
