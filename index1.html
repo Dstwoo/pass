@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#e63946">
     <title>Carnet de codes Ambulancier</title>
+    
+    <!-- ICONE INTEGRÉE (Base64 du SVG) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlNjM5NDY7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojYjAxMDIwO3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjQwIiBmaWxsPSJ1cmwoI2dyYWQpIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjE1Ii8+PHBhdGggZD0iTTIxNiAxMDAgSDI5NiBWMjE2IEg0MTIgVjI5NiBIMjk2IFY0MTIgSDIxNiBWMjk2IEgxMDAgVjIxNiBIMjE2IFoiIGZpbGw9IndoaXRlIiAvPjx0ZXh0IHg9IjUwJSIgeT0iNTQlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE2MCIgZmlsbD0iIzFkMzU1NyI+IzwvdGV4dD48L3N2Zz4=">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlNjM5NDY7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojYjAxMDIwO3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjQwIiBmaWxsPSJ1cmwoI2dyYWQpIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjE1Ii8+PHBhdGggZD0iTTIxNiAxMDAgSDI5NiBWMjE2IEg0MTIgVjI5NiBIMjk2IFY0MTIgSDIxNiBWMjk2IEgxMDAgVjIxNiBIMjE2IFoiIGZpbGw9IndoaXRlIiAvPjx0ZXh0IHg9IjUwJSIgeT0iNTQlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE2MCIgZmlsbD0iIzFkMzU1NyI+IzwvdGV4dD48L3N2Zz4=">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- Variables et Thème --- */
@@ -75,6 +81,12 @@
             gap: 0.5rem;
             justify-content: center;
             flex-grow: 1;
+        }
+
+        .header-logo-svg {
+            height: 1.8em;
+            width: 1.8em;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
         }
 
         .theme-toggle {
@@ -338,8 +350,19 @@
     <div class="header">
         <div style="width: 2rem;"></div>
         <div class="header-title">
-            <span>🚑</span>
-            <span>Carnet Ambulancier</span>
+            <!-- LOGO SVG INTEGRE -->
+            <svg class="header-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <defs>
+                <linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <circle cx="256" cy="256" r="240" fill="url(#gradHeader)" stroke="white" stroke-width="15"/>
+              <path d="M216 100 H296 V216 H412 V296 H296 V412 H216 V296 H100 V216 H216 Z" fill="#e63946" />
+              <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="160" fill="#1d3557">#</text>
+            </svg>
+            <span style="margin-left: 0.5rem;">Carnet Ambulancier</span>
         </div>
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="Changer le thème">
             🌓
@@ -347,7 +370,7 @@
     </div>
 
     <div class="container">
-        <!-- Status & GPS (Restauré pour la compatibilité avec le script d'origine) -->
+        <!-- Status & GPS -->
         <div class="card">
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                 <div style="font-size: 0.9rem; font-weight: 600; color: var(--color-secondary);">
@@ -497,7 +520,6 @@
         }
 
         // --- CONSTANTES ET ETAT ---
-        // Utilisation de var pour éviter l'erreur "already declared" lors des rechargements
         var places = [];
         var currentPosition = null;
         var storageAvailable = true;
@@ -512,7 +534,7 @@
             const stored = localStorage.getItem('ambu_codes_db');
             places = stored ? JSON.parse(stored) : [];
             
-            // Migration automatique si nécessaire
+            // Migration automatique
             let migrationNeeded = false;
             places = places.map(p => {
                 if (p.nom && !p.nom_lieu) {
@@ -547,30 +569,22 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (!storageAvailable) showToast("⚠️ Mode Privé : Pas de sauvegarde !");
             updateLocation();
-            renderPlaces(); // Appel initial
+            renderPlaces(); 
         });
 
-        // --- SYSTEME GPS D'ORIGINE (Restauré) ---
-        
-        function degToRad(deg) {
-            return deg * (Math.PI / 180);
-        }
+        // --- SYSTEME GPS ---
+        function degToRad(deg) { return deg * (Math.PI / 180); }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Rayon de la Terre déplacé ici pour éviter les erreurs globales
-            if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) {
-                return Infinity;
-            }
-
+            const R = 6371; 
+            if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) return Infinity;
             const dLat = degToRad(lat2 - lat1);
             const dLon = degToRad(lon2 - lon1);
-
             const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                       Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) *
                       Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-            return R * c; // Distance en km
+            return R * c; 
         }
 
         function updateLocation() {
@@ -579,42 +593,28 @@
                 renderPlaces();
                 return;
             }
-
             locationTextEl.textContent = "Position actuelle : Recherche en cours...";
             lastUpdateTextEl.textContent = "";
             currentPosition = null;
-            console.log("Tentative de géolocalisation lancée.");
-
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     currentPosition = {
                         lat: position.coords.latitude,
                         lon: position.coords.longitude
                     };
-                    
                     const now = new Date();
                     locationTextEl.textContent = `Position OK (Lat: ${currentPosition.lat.toFixed(4)}, Lon: ${currentPosition.lon.toFixed(4)})`;
                     lastUpdateTextEl.textContent = `MàJ: ${now.toLocaleTimeString('fr-FR')}`;
                     filterAndRenderPlaces();
                     showToast("Position GPS actualisée.");
-                    console.log("Géolocalisation réussie:", currentPosition);
                 },
                 (error) => {
-                    console.error("Erreur de géolocalisation (Code:", error.code, "):", error.message);
                     let errorMessage = "Erreur de géolocalisation : ";
                     switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage += "Accès refusé.";
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage += "Position indisponible.";
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage += "Délai expiré.";
-                            break;
-                        default:
-                            errorMessage += "Erreur inconnue.";
-                            break;
+                        case error.PERMISSION_DENIED: errorMessage += "Accès refusé."; break;
+                        case error.POSITION_UNAVAILABLE: errorMessage += "Position indisponible."; break;
+                        case error.TIMEOUT: errorMessage += "Délai expiré."; break;
+                        default: errorMessage += "Erreur inconnue."; break;
                     }
                     locationTextEl.textContent = errorMessage;
                     lastUpdateTextEl.textContent = "Tri par nom.";
@@ -622,11 +622,7 @@
                     filterAndRenderPlaces();
                     showToast(errorMessage);
                 },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
         }
 
@@ -677,7 +673,6 @@
                 places.push(data);
                 showToast("Lieu ajouté");
             }
-            
             saveDB();
             closeModal();
             filterAndRenderPlaces();
@@ -743,13 +738,11 @@
                 return matchTerm && matchType && matchDist;
             });
 
-            // Tri
             if (currentPosition) {
                 filtered.sort((a, b) => a._dist - b._dist);
             } else {
                 filtered.sort((a, b) => (a.nom_lieu || "").localeCompare(b.nom_lieu || ""));
             }
-
             renderPlaces(filtered);
         }
 
@@ -767,7 +760,6 @@
 
             data.forEach(p => {
                 const distDisplay = formatDistance(p._dist);
-
                 const wazeUrl = (p.latitude && p.longitude) ? `https://waze.com/ul?ll=${p.latitude},${p.longitude}&navigate=yes` : null;
                 const mapsUrl = (p.latitude && p.longitude) 
                     ? `https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}` 
@@ -786,7 +778,6 @@
                                 <span class="distance-badge">${distDisplay}</span>
                             </div>
                         </div>
-
                         <div class="codes-block">
                             <div class="code-row">
                                 <span class="code-label">Portail / Principal</span>
@@ -802,10 +793,8 @@
                                 </span>
                             </div>` : ''}
                         </div>
-
                         ${p.commentaire ? `<div style="font-style:italic; font-size:0.9rem; color:var(--color-text-light); margin-bottom:0.5rem">📝 ${p.commentaire}</div>` : ''}
                     </div>
-
                     <div class="place-actions">
                         <button onclick="sharePlace('${p.id}')" class="button btn-sm btn-whatsapp">📤 Partager</button>
                         ${wazeUrl ? `<a href="${wazeUrl}" target="_blank" class="button btn-sm btn-primary">🚙 Waze</a>` : ''}
@@ -823,38 +812,10 @@
             document.getElementById('data-tools').classList.toggle('hidden');
         }
 
-        function sharePlace(id) {
-            const p = places.find(place => place.id === id);
-            if (!p) return;
-
-            const mapLink = (p.latitude && p.longitude) 
-                ? `https://www.google.com/maps/search/?api=1&query=${p.latitude},${p.longitude}` 
-                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
-            
-            const text = `🚑 *INFO ACCÈS AMBULANCE* 🚑\n\n` +
-                         `🏥 *${p.nom_lieu}* (${p.type_lieu})\n` +
-                         `📍 ${p.adresse}, ${p.ville}\n` +
-                         `🔢 *CODE:* ${p.code_entree_principal}\n` +
-                         (p.code_secondaire ? `🔢 Code 2: ${p.code_secondaire}\n` : '') +
-                         (p.commentaire ? `📝 Note: ${p.commentaire}\n` : '') +
-                         `\n🗺️ GPS: ${mapLink}`;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: `Code ${p.nom_lieu}`,
-                    text: text
-                }).catch(console.error);
-            } else {
-                copyToClipboard(text);
-                showToast("Infos copiées !");
-            }
-        }
-
-        // Fonction centralisée pour un format d'export unique et compatible
         function getCleanDataForExport() {
             return places.map(p => ({
                 id: p.id,
-                nom_lieu: p.nom_lieu || p.nom, // Compatible avec l'ancien format interne si migration incomplète
+                nom_lieu: p.nom_lieu || p.nom, 
                 type_lieu: p.type_lieu || p.type,
                 adresse: p.adresse || "",
                 ville: p.ville || "",
@@ -867,22 +828,35 @@
             }));
         }
 
+        function sharePlace(id) {
+            const p = places.find(place => place.id === id);
+            if (!p) return;
+            const mapLink = (p.latitude && p.longitude) 
+                ? `https://www.google.com/maps/search/?api=1&query=${p.latitude},${p.longitude}` 
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
+            const text = `🚑 *INFO ACCÈS AMBULANCE* 🚑\n\n🏥 *${p.nom_lieu}* (${p.type_lieu})\n📍 ${p.adresse}, ${p.ville}\n🔢 *CODE:* ${p.code_entree_principal}\n` +
+                         (p.code_secondaire ? `🔢 Code 2: ${p.code_secondaire}\n` : '') +
+                         (p.commentaire ? `📝 Note: ${p.commentaire}\n` : '') +
+                         `\n🗺️ GPS: ${mapLink}`;
+            if (navigator.share) {
+                navigator.share({ title: `Code ${p.nom_lieu}`, text: text }).catch(console.error);
+            } else {
+                copyToClipboard(text);
+                showToast("Infos copiées !");
+            }
+        }
+
         function shareGlobalData() {
             const cleanData = getCleanDataForExport();
             const dataStr = JSON.stringify(cleanData, null, 2);
             const fileName = `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
             const file = new File([dataStr], fileName, { type: 'application/json' });
-
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 navigator.share({
                     files: [file],
                     title: 'Sauvegarde Codes Ambulancier',
                     text: 'Voici ma base de codes mise à jour.'
-                }).then(() => showToast("Fichier partagé !"))
-                  .catch((err) => {
-                      console.error(err);
-                      exportData(); 
-                  });
+                }).then(() => showToast("Fichier partagé !")).catch(() => exportData());
             } else {
                 exportData();
                 showToast("Partage fichier non supporté, téléchargement lancé.");
@@ -894,7 +868,6 @@
             const dataStr = JSON.stringify(cleanData, null, 2);
             const blob = new Blob([dataStr], { type: "application/json" });
             const url = URL.createObjectURL(blob);
-            
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", url);
             dlAnchor.setAttribute("download", `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`);
@@ -912,21 +885,16 @@
         function processImportFile(input) {
             const file = input.files[0];
             if(!file) return;
-            
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const json = JSON.parse(e.target.result);
-                    if(!Array.isArray(json)) throw new Error("Format invalide : le fichier doit être une liste.");
-                    
-                    // Validation plus souple : accepte soit l'ancien format (nom), soit le nouveau (nom_lieu)
+                    if(!Array.isArray(json)) throw new Error("Format invalide : doit être une liste.");
                     const isValid = json.some(item => item.nom_lieu || item.nom || item.code_entree_principal || item.code1);
-                    if (!isValid) throw new Error("Structure JSON incompatible ou fichier vide.");
+                    if (!isValid) throw new Error("Structure JSON incompatible.");
 
-                    // Normalisation des données importées (Conversion ancien -> nouveau format si nécessaire)
                     const normalizedJson = json.map(p => {
                         if (p.nom && !p.nom_lieu) {
-                            // C'est un ancien format, on convertit
                             return {
                                 id: p.id,
                                 nom_lieu: p.nom,
@@ -941,12 +909,11 @@
                                 date_maj: p.updated || new Date().toISOString()
                             };
                         }
-                        // C'est déjà le bon format
                         return p;
                     });
 
                     if (importMode === 'replace') {
-                        if(confirm(`⚠️ ATTENTION : Vous allez remplacer vos ${places.length} lieux par les ${normalizedJson.length} lieux du fichier. Continuer ?`)) {
+                        if(confirm(`⚠️ Remplacer ${places.length} lieux par ${normalizedJson.length} ?`)) {
                             places = normalizedJson;
                             saveDB();
                             showToast(`Base remplacée : ${places.length} lieux.`);
@@ -955,21 +922,17 @@
                     } else {
                         let addedCount = 0;
                         const existingIds = new Set(places.map(p => p.id));
-                        
                         normalizedJson.forEach(newItem => {
                             if (!existingIds.has(newItem.id)) {
                                 places.push(newItem);
                                 addedCount++;
                             }
                         });
-                        
                         saveDB();
-                        showToast(`Fusion terminée : +${addedCount} nouveaux lieux.`);
+                        showToast(`Fusion : +${addedCount} lieux.`);
                         filterAndRenderPlaces();
                     }
-                } catch(ex) { 
-                    alert("Erreur de lecture : " + ex.message); 
-                }
+                } catch(ex) { alert("Erreur de lecture : " + ex.message); }
                 input.value = ''; 
             };
             reader.readAsText(file);
@@ -982,12 +945,7 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast("Copié !");
-            } catch (err) {
-                showToast("Erreur copie");
-            }
+            try { document.execCommand('copy'); showToast("Copié !"); } catch (err) { showToast("Erreur copie"); }
             document.body.removeChild(textArea);
         }
 
@@ -998,7 +956,6 @@
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
-        // Modal
         function openModal() {
             document.getElementById('place-form').reset();
             document.getElementById('place-id').value = '';
