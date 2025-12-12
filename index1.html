@@ -66,7 +66,7 @@
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Espace entre le titre et le bouton */
+            justify-content: space-between;
         }
         
         .header-title {
@@ -116,7 +116,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            text-decoration: none; /* Pour les liens stylisés en boutons */
+            text-decoration: none;
         }
 
         .button:active { transform: scale(0.98); }
@@ -226,7 +226,7 @@
             display: flex;
             gap: 0.5rem;
             overflow-x: auto;
-            white-space: nowrap; /* Empêche le retour à la ligne des boutons */
+            white-space: nowrap;
         }
 
         /* --- Modale --- */
@@ -320,7 +320,6 @@
         .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
     </style>
     
-    <!-- Script Dark Mode Init immédiat -->
     <script>
         (function() {
             const storedTheme = localStorage.getItem('theme');
@@ -337,7 +336,7 @@
 
     <!-- Header -->
     <div class="header">
-        <div style="width: 2rem;"></div> <!-- Spacer pour centrer le titre -->
+        <div style="width: 2rem;"></div>
         <div class="header-title">
             <span>🚑</span>
             <span>Carnet Ambulancier</span>
@@ -348,29 +347,34 @@
     </div>
 
     <div class="container">
-        <!-- Status & GPS -->
+        <!-- Status & GPS (Restauré pour la compatibilité avec le script d'origine) -->
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div id="gps-status" style="font-size: 0.9rem; color: var(--color-text-light);">
-                    🔍 Recherche GPS...
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--color-secondary);">
+                    <span id="location-text">Position actuelle : Recherche en cours...</span>
+                    <span id="last-update-text"></span>
                 </div>
-                <button class="button btn-secondary btn-sm" onclick="updateLocation()">Actualiser</button>
+                <div style="font-size: 0.75rem; color: var(--color-primary);">
+                    ⚠️ GPS : Nécessite HTTPS ou file://
+                </div>
+                <button class="button btn-secondary btn-sm" onclick="updateLocation()" style="width: 100%;">Actualiser ma position</button>
             </div>
         </div>
 
         <!-- Recherche -->
         <div class="card">
-            <input type="text" id="search-input" placeholder="Rechercher (nom, ville, digicode...)" oninput="filterPlaces()">
+            <input type="text" id="search-input" placeholder="Rechercher (nom, ville, digicode...)" oninput="filterAndRenderPlaces()">
             <div class="filter-grid">
-                <select id="type-filter" onchange="filterPlaces()">
+                <select id="type-filter" onchange="filterAndRenderPlaces()">
                     <option value="">Tous types</option>
                     <option value="Hôpital">Hôpital</option>
                     <option value="Clinique">Clinique</option>
                     <option value="Résidence">Résidence</option>
-                    <option value="EHPAD">EHPAD</option>
+                    <option value="Maison de retraite / EHPAD">Maison de retraite / EHPAD</option>
+                    <option value="Parking">Parking</option>
                     <option value="Autre">Autre</option>
                 </select>
-                <select id="dist-filter" onchange="filterPlaces()">
+                <select id="dist-filter" onchange="filterAndRenderPlaces()">
                     <option value="0">Toute distance</option>
                     <option value="2"> < 2 km</option>
                     <option value="10"> < 10 km</option>
@@ -416,7 +420,6 @@
                 </div>
             </div>
             
-            <!-- Input file caché -->
             <input type="file" id="import-file" accept=".json" style="display: none;" onchange="processImportFile(this)">
         </div>
 
@@ -442,12 +445,13 @@
                     <input type="hidden" id="place-id">
                     
                     <label>Nom & Type *</label>
-                    <input type="text" id="nom" required placeholder="Ex: Résidence Les Lilas">
-                    <select id="type" required>
+                    <input type="text" id="nom_lieu" required placeholder="Ex: Résidence Les Lilas">
+                    <select id="type_lieu" required>
                         <option value="Hôpital">Hôpital</option>
                         <option value="Clinique">Clinique</option>
                         <option value="Résidence" selected>Résidence</option>
-                        <option value="EHPAD">EHPAD</option>
+                        <option value="Maison de retraite / EHPAD">Maison de retraite / EHPAD</option>
+                        <option value="Parking">Parking</option>
                         <option value="Autre">Autre</option>
                     </select>
 
@@ -457,17 +461,17 @@
 
                     <label style="color: var(--color-primary); font-weight:bold;">Codes d'accès *</label>
                     <div style="display:flex; gap:0.5rem">
-                        <input type="text" id="code1" required placeholder="Principal (Portail)" style="font-weight:bold;">
-                        <input type="text" id="code2" placeholder="Secondaire (Hall)">
+                        <input type="text" id="code_entree_principal" required placeholder="Principal (Portail)" style="font-weight:bold;">
+                        <input type="text" id="code_secondaire" placeholder="Secondaire (Hall)">
                     </div>
 
                     <label>Note / Commentaire</label>
-                    <textarea id="note" rows="2" placeholder="Ex: Batiment B, 3ème étage, ascenseur gauche"></textarea>
+                    <textarea id="commentaire" rows="2" placeholder="Ex: Batiment B, 3ème étage, ascenseur gauche"></textarea>
 
                     <label>Position GPS</label>
                     <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-                        <input type="number" id="lat" step="any" placeholder="Lat">
-                        <input type="number" id="lon" step="any" placeholder="Lon">
+                        <input type="number" id="latitude" step="any" placeholder="Lat">
+                        <input type="number" id="longitude" step="any" placeholder="Lon">
                         <button type="button" class="button btn-secondary" onclick="fillGPS()">📍 Moi</button>
                     </div>
 
@@ -492,74 +496,150 @@
             localStorage.setItem('theme', target);
         }
 
-        // --- ETAT GLOBAL ---
+        // --- CONSTANTES ET ETAT ---
+        const R = 6371; // Rayon de la Terre en kilomètres
         let places = [];
-        let currentPos = null;
+        let currentPosition = null;
         let storageAvailable = true;
-        let importMode = 'merge'; // 'merge' ou 'replace'
+        let importMode = 'merge'; 
+
+        // Elements DOM pour le GPS
+        const locationTextEl = document.getElementById('location-text');
+        const lastUpdateTextEl = document.getElementById('last-update-text');
 
         // --- SAFE STORAGE INIT ---
         try {
             const stored = localStorage.getItem('ambu_codes_db');
             places = stored ? JSON.parse(stored) : [];
+            
+            // Migration automatique si nécessaire
+            let migrationNeeded = false;
+            places = places.map(p => {
+                if (p.nom && !p.nom_lieu) {
+                    migrationNeeded = true;
+                    return {
+                        id: p.id,
+                        nom_lieu: p.nom,
+                        type_lieu: p.type === 'EHPAD' ? 'Maison de retraite / EHPAD' : p.type,
+                        adresse: p.adresse || "",
+                        ville: p.ville || "",
+                        code_entree_principal: p.code1 || "",
+                        code_secondaire: p.code2 || "",
+                        commentaire: p.note || "",
+                        latitude: p.lat,
+                        longitude: p.lon,
+                        date_maj: p.updated || new Date().toISOString()
+                    };
+                }
+                return p;
+            });
+
+            if (migrationNeeded) {
+                console.log("Migration des données effectuée.");
+                localStorage.setItem('ambu_codes_db', JSON.stringify(places));
+            }
+
         } catch (e) {
             console.error("Erreur d'accès au LocalStorage:", e);
             storageAvailable = false;
         }
 
-        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             if (!storageAvailable) showToast("⚠️ Mode Privé : Pas de sauvegarde !");
             updateLocation();
-            renderList();
+            renderPlaces(); // Appel initial
         });
 
-        // --- GPS LOGIC ---
+        // --- SYSTEME GPS D'ORIGINE (Restauré) ---
+        
+        function degToRad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) {
+                return Infinity;
+            }
+
+            const dLat = degToRad(lat2 - lat1);
+            const dLon = degToRad(lon2 - lon1);
+
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c; // Distance en km
+        }
+
         function updateLocation() {
-            const status = document.getElementById('gps-status');
-            status.innerHTML = "📡 Recherche satellite...";
-            
             if (!navigator.geolocation) {
-                status.innerHTML = "❌ GPS non supporté";
+                locationTextEl.textContent = "Géolocalisation non supportée par votre navigateur.";
+                renderPlaces();
                 return;
             }
 
+            locationTextEl.textContent = "Position actuelle : Recherche en cours...";
+            lastUpdateTextEl.textContent = "";
+            currentPosition = null;
+            console.log("Tentative de géolocalisation lancée.");
+
             navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    currentPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-                    status.innerHTML = `✅ GPS OK (Précision: ${Math.round(pos.coords.accuracy)}m)`;
-                    filterPlaces();
+                (position) => {
+                    currentPosition = {
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    };
+                    
+                    const now = new Date();
+                    locationTextEl.textContent = `Position OK (Lat: ${currentPosition.lat.toFixed(4)}, Lon: ${currentPosition.lon.toFixed(4)})`;
+                    lastUpdateTextEl.textContent = `MàJ: ${now.toLocaleTimeString('fr-FR')}`;
+                    filterAndRenderPlaces();
+                    showToast("Position GPS actualisée.");
+                    console.log("Géolocalisation réussie:", currentPosition);
                 },
-                (err) => {
-                    console.error(err);
-                    status.innerHTML = "⚠️ GPS non disponible";
+                (error) => {
+                    console.error("Erreur de géolocalisation (Code:", error.code, "):", error.message);
+                    let errorMessage = "Erreur de géolocalisation : ";
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += "Accès refusé.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += "Position indisponible.";
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += "Délai expiré.";
+                            break;
+                        default:
+                            errorMessage += "Erreur inconnue.";
+                            break;
+                    }
+                    locationTextEl.textContent = errorMessage;
+                    lastUpdateTextEl.textContent = "Tri par nom.";
+                    currentPosition = null;
+                    filterAndRenderPlaces();
+                    showToast(errorMessage);
                 },
-                { enableHighAccuracy: true, timeout: 10000 }
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
             );
         }
 
-        function getDistance(lat1, lon1, lat2, lon2) {
-            if (!lat1 || !lon1 || !lat2 || !lon2) return Infinity;
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon/2) * Math.sin(dLon/2);
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        }
-
         function fillGPS() {
-            if(currentPos) {
-                document.getElementById('lat').value = currentPos.lat.toFixed(6);
-                document.getElementById('lon').value = currentPos.lon.toFixed(6);
+            if(currentPosition) {
+                document.getElementById('latitude').value = currentPosition.lat.toFixed(6);
+                document.getElementById('longitude').value = currentPosition.lon.toFixed(6);
             } else {
                 updateLocation();
                 showToast("Réessayez la localisation...");
             }
         }
 
-        // --- CORE LOGIC ---
+        // --- LOGIQUE METIER ---
         function saveDB() {
             if (storageAvailable) {
                 try {
@@ -568,24 +648,24 @@
                     showToast("Erreur de sauvegarde !");
                 }
             }
-            renderList();
+            renderPlaces();
         }
 
         function handleFormSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('place-id').value;
             const data = {
-                id: id || Date.now().toString(),
-                nom: document.getElementById('nom').value,
-                type: document.getElementById('type').value,
+                id: id || Date.now().toString(36) + Math.random().toString(36).substr(2),
+                nom_lieu: document.getElementById('nom_lieu').value,
+                type_lieu: document.getElementById('type_lieu').value,
                 adresse: document.getElementById('adresse').value,
                 ville: document.getElementById('ville').value,
-                code1: document.getElementById('code1').value,
-                code2: document.getElementById('code2').value,
-                note: document.getElementById('note').value,
-                lat: parseFloat(document.getElementById('lat').value) || null,
-                lon: parseFloat(document.getElementById('lon').value) || null,
-                updated: new Date().toISOString()
+                code_entree_principal: document.getElementById('code_entree_principal').value,
+                code_secondaire: document.getElementById('code_secondaire').value,
+                commentaire: document.getElementById('commentaire').value,
+                latitude: parseFloat(document.getElementById('latitude').value) || null,
+                longitude: parseFloat(document.getElementById('longitude').value) || null,
+                date_maj: new Date().toISOString()
             };
 
             if (id) {
@@ -599,6 +679,7 @@
             
             saveDB();
             closeModal();
+            filterAndRenderPlaces();
         }
 
         function deletePlace(id) {
@@ -606,6 +687,7 @@
                 places = places.filter(p => p.id !== id);
                 saveDB();
                 showToast("Lieu supprimé");
+                filterAndRenderPlaces();
             }
         }
 
@@ -613,162 +695,62 @@
             const p = places.find(place => place.id === id);
             if(!p) return;
             document.getElementById('place-id').value = p.id;
-            document.getElementById('nom').value = p.nom;
-            document.getElementById('type').value = p.type;
+            document.getElementById('nom_lieu').value = p.nom_lieu;
+            document.getElementById('type_lieu').value = p.type_lieu;
             document.getElementById('adresse').value = p.adresse || '';
             document.getElementById('ville').value = p.ville || '';
-            document.getElementById('code1').value = p.code1 || '';
-            document.getElementById('code2').value = p.code2 || '';
-            document.getElementById('note').value = p.note || '';
-            document.getElementById('lat').value = p.lat || '';
-            document.getElementById('lon').value = p.lon || '';
+            document.getElementById('code_entree_principal').value = p.code_entree_principal || '';
+            document.getElementById('code_secondaire').value = p.code_secondaire || '';
+            document.getElementById('commentaire').value = p.commentaire || '';
+            document.getElementById('latitude').value = p.latitude || '';
+            document.getElementById('longitude').value = p.longitude || '';
             document.getElementById('modal-title').innerText = "Modifier Lieu";
             document.getElementById('place-modal').style.display = 'block';
         }
 
-        // --- PARTAGE & EXPORT AVANCE ---
-
-        function toggleDataTools() {
-            document.getElementById('data-tools').classList.toggle('hidden');
-        }
-
-        // 1. Partager un lieu unique (WhatsApp / SMS)
-        function sharePlace(id) {
-            const p = places.find(place => place.id === id);
-            if (!p) return;
-
-            const mapLink = (p.lat && p.lon) 
-                ? `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}` 
-                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
-            
-            const text = `🚑 *INFO ACCÈS AMBULANCE* 🚑\n\n` +
-                         `🏥 *${p.nom}* (${p.type})\n` +
-                         `📍 ${p.adresse}, ${p.ville}\n` +
-                         `🔢 *CODE:* ${p.code1}\n` +
-                         (p.code2 ? `🔢 Code 2: ${p.code2}\n` : '') +
-                         (p.note ? `📝 Note: ${p.note}\n` : '') +
-                         `\n🗺️ GPS: ${mapLink}`;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: `Code ${p.nom}`,
-                    text: text
-                }).catch(console.error);
-            } else {
-                // Fallback: Copier + Ouvrir WhatsApp Web si desktop
-                copyToClipboard(text);
-                showToast("Infos copiées !");
-                // Optionnel: window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
-            }
-        }
-
-        // 2. Partager toute la base (Fichier JSON via Share Sheet)
-        function shareGlobalData() {
-            const dataStr = JSON.stringify(places, null, 2);
-            const fileName = `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
-            const file = new File([dataStr], fileName, { type: 'application/json' });
-
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({
-                    files: [file],
-                    title: 'Sauvegarde Codes Ambulancier',
-                    text: 'Voici ma base de codes mise à jour.'
-                }).then(() => showToast("Fichier partagé !"))
-                  .catch((err) => {
-                      console.error(err);
-                      exportData(); // Fallback
-                  });
-            } else {
-                // Fallback classique
-                exportData();
-                showToast("Partage fichier non supporté, téléchargement lancé.");
-            }
-        }
-
-        // 3. Export Classique (Téléchargement)
-        function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(places));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `codes_ambu_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-        }
-
-        // 4. Import Intelligent (Fusion ou Remplacement)
-        function triggerImport(mode) {
-            importMode = mode;
-            document.getElementById('import-file').click();
-        }
-
-        function processImportFile(input) {
-            const file = input.files[0];
-            if(!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const json = JSON.parse(e.target.result);
-                    if(!Array.isArray(json)) throw new Error("Format invalide");
-
-                    if (importMode === 'replace') {
-                        if(confirm(`⚠️ ATTENTION : Vous allez remplacer vos ${places.length} lieux par les ${json.length} lieux du fichier. Continuer ?`)) {
-                            places = json;
-                            saveDB();
-                            showToast(`Base remplacée : ${places.length} lieux.`);
-                        }
-                    } else {
-                        // MODE FUSION (MERGE)
-                        let addedCount = 0;
-                        const existingIds = new Set(places.map(p => p.id));
-                        
-                        json.forEach(newItem => {
-                            if (!existingIds.has(newItem.id)) {
-                                places.push(newItem);
-                                addedCount++;
-                            } else {
-                                // Optionnel : Si l'ID existe, on pourrait vérifier la date de modif
-                                // Pour l'instant, on garde la version locale par sécurité
-                            }
-                        });
-                        
-                        saveDB();
-                        showToast(`Fusion terminée : +${addedCount} nouveaux lieux.`);
-                    }
-                } catch(ex) { 
-                    alert("Erreur de lecture du fichier JSON."); 
-                }
-                input.value = ''; // Reset input
-            };
-            reader.readAsText(file);
-        }
-
         // --- RENDER & FILTER ---
-        function filterPlaces() {
+        function formatDistance(km) {
+            if (km === Infinity) return '<span class="distance-info">--</span>';
+            if (km < 1) return `${Math.round(km * 1000)} m`;
+            return `${km.toFixed(1)} km`;
+        }
+
+        function filterAndRenderPlaces() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const type = document.getElementById('type-filter').value;
             const maxDist = parseFloat(document.getElementById('dist-filter').value);
 
-            const filtered = places.map(p => {
-                const dist = (currentPos && p.lat) ? getDistance(currentPos.lat, currentPos.lon, p.lat, p.lon) : Infinity;
+            let filtered = places.map(p => {
+                let dist = Infinity;
+                if (currentPosition && p.latitude !== null && p.longitude !== null) {
+                    dist = calculateDistance(
+                        currentPosition.lat, currentPosition.lon,
+                        parseFloat(p.latitude), parseFloat(p.longitude)
+                    );
+                }
                 return { ...p, _dist: dist };
-            }).filter(p => {
-                const matchTerm = p.nom.toLowerCase().includes(term) || (p.ville||'').toLowerCase().includes(term);
-                const matchType = !type || p.type === type;
+            });
+
+            filtered = filtered.filter(p => {
+                const matchTerm = (p.nom_lieu || "").toLowerCase().includes(term) || 
+                                  (p.ville || "").toLowerCase().includes(term) || 
+                                  (p.commentaire || "").toLowerCase().includes(term);
+                const matchType = !type || p.type_lieu === type;
                 const matchDist = maxDist === 0 || p._dist <= maxDist;
                 return matchTerm && matchType && matchDist;
             });
 
-            filtered.sort((a, b) => {
-                if (currentPos && a._dist !== Infinity && b._dist !== Infinity) return a._dist - b._dist;
-                return a.nom.localeCompare(b.nom);
-            });
+            // Tri
+            if (currentPosition) {
+                filtered.sort((a, b) => a._dist - b._dist);
+            } else {
+                filtered.sort((a, b) => (a.nom_lieu || "").localeCompare(b.nom_lieu || ""));
+            }
 
-            renderList(filtered);
+            renderPlaces(filtered);
         }
 
-        function renderList(list = null) {
+        function renderPlaces(list = null) {
             const data = list || places;
             const container = document.getElementById('places-list');
             container.innerHTML = '';
@@ -781,13 +763,11 @@
             }
 
             data.forEach(p => {
-                const distDisplay = p._dist && p._dist !== Infinity 
-                    ? (p._dist < 1 ? Math.round(p._dist*1000)+' m' : p._dist.toFixed(1)+' km') 
-                    : '';
+                const distDisplay = formatDistance(p._dist);
 
-                const wazeUrl = (p.lat && p.lon) ? `https://waze.com/ul?ll=${p.lat},${p.lon}&navigate=yes` : null;
-                const mapsUrl = (p.lat && p.lon) 
-                    ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}` 
+                const wazeUrl = (p.latitude && p.longitude) ? `https://waze.com/ul?ll=${p.latitude},${p.longitude}&navigate=yes` : null;
+                const mapsUrl = (p.latitude && p.longitude) 
+                    ? `https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}` 
                     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
 
                 const html = `
@@ -795,11 +775,11 @@
                     <div class="place-content">
                         <div class="place-header">
                             <div class="place-title">
-                                <h3>${p.nom}</h3>
+                                <h3>${p.nom_lieu}</h3>
                                 <div class="place-city">${p.adresse ? p.adresse + ', ' : ''} ${p.ville}</div>
                             </div>
                             <div class="place-meta">
-                                <span class="badge">${p.type}</span>
+                                <span class="badge">${p.type_lieu}</span>
                                 <span class="distance-badge">${distDisplay}</span>
                             </div>
                         </div>
@@ -807,20 +787,20 @@
                         <div class="codes-block">
                             <div class="code-row">
                                 <span class="code-label">Portail / Principal</span>
-                                <span class="code-value" onclick="copyToClipboard('${p.code1}')">
-                                    ${p.code1} <span style="font-size:0.7rem; font-weight:normal">📋</span>
+                                <span class="code-value" onclick="copyToClipboard('${p.code_entree_principal}')">
+                                    ${p.code_entree_principal} <span style="font-size:0.7rem; font-weight:normal">📋</span>
                                 </span>
                             </div>
-                            ${p.code2 ? `
+                            ${p.code_secondaire ? `
                             <div class="code-row">
                                 <span class="code-label">Intérieur / Bis</span>
-                                <span class="code-value" onclick="copyToClipboard('${p.code2}')">
-                                    ${p.code2} <span style="font-size:0.7rem; font-weight:normal">📋</span>
+                                <span class="code-value" onclick="copyToClipboard('${p.code_secondaire}')">
+                                    ${p.code_secondaire} <span style="font-size:0.7rem; font-weight:normal">📋</span>
                                 </span>
                             </div>` : ''}
                         </div>
 
-                        ${p.note ? `<div style="font-style:italic; font-size:0.9rem; color:var(--color-text-light); margin-bottom:0.5rem">📝 ${p.note}</div>` : ''}
+                        ${p.commentaire ? `<div style="font-style:italic; font-size:0.9rem; color:var(--color-text-light); margin-bottom:0.5rem">📝 ${p.commentaire}</div>` : ''}
                     </div>
 
                     <div class="place-actions">
@@ -835,7 +815,117 @@
             });
         }
 
-        // --- UTILS ---
+        // --- PARTAGE & OUTILS ---
+        function toggleDataTools() {
+            document.getElementById('data-tools').classList.toggle('hidden');
+        }
+
+        function sharePlace(id) {
+            const p = places.find(place => place.id === id);
+            if (!p) return;
+
+            const mapLink = (p.latitude && p.longitude) 
+                ? `https://www.google.com/maps/search/?api=1&query=${p.latitude},${p.longitude}` 
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
+            
+            const text = `🚑 *INFO ACCÈS AMBULANCE* 🚑\n\n` +
+                         `🏥 *${p.nom_lieu}* (${p.type_lieu})\n` +
+                         `📍 ${p.adresse}, ${p.ville}\n` +
+                         `🔢 *CODE:* ${p.code_entree_principal}\n` +
+                         (p.code_secondaire ? `🔢 Code 2: ${p.code_secondaire}\n` : '') +
+                         (p.commentaire ? `📝 Note: ${p.commentaire}\n` : '') +
+                         `\n🗺️ GPS: ${mapLink}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: `Code ${p.nom_lieu}`,
+                    text: text
+                }).catch(console.error);
+            } else {
+                copyToClipboard(text);
+                showToast("Infos copiées !");
+            }
+        }
+
+        function shareGlobalData() {
+            const dataStr = JSON.stringify(places, null, 2);
+            const fileName = `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
+            const file = new File([dataStr], fileName, { type: 'application/json' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    files: [file],
+                    title: 'Sauvegarde Codes Ambulancier',
+                    text: 'Voici ma base de codes mise à jour.'
+                }).then(() => showToast("Fichier partagé !"))
+                  .catch((err) => {
+                      console.error(err);
+                      exportData(); 
+                  });
+            } else {
+                exportData();
+                showToast("Partage fichier non supporté, téléchargement lancé.");
+            }
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(places));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function triggerImport(mode) {
+            importMode = mode;
+            document.getElementById('import-file').click();
+        }
+
+        function processImportFile(input) {
+            const file = input.files[0];
+            if(!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    if(!Array.isArray(json)) throw new Error("Format invalide");
+                    
+                    const isValid = json.some(item => item.nom_lieu || item.code_entree_principal);
+                    if (!isValid) throw new Error("Structure JSON incompatible");
+
+                    if (importMode === 'replace') {
+                        if(confirm(`⚠️ ATTENTION : Vous allez remplacer vos ${places.length} lieux par les ${json.length} lieux du fichier. Continuer ?`)) {
+                            places = json;
+                            saveDB();
+                            showToast(`Base remplacée : ${places.length} lieux.`);
+                            filterAndRenderPlaces();
+                        }
+                    } else {
+                        let addedCount = 0;
+                        const existingIds = new Set(places.map(p => p.id));
+                        
+                        json.forEach(newItem => {
+                            if (!existingIds.has(newItem.id)) {
+                                places.push(newItem);
+                                addedCount++;
+                            }
+                        });
+                        
+                        saveDB();
+                        showToast(`Fusion terminée : +${addedCount} nouveaux lieux.`);
+                        filterAndRenderPlaces();
+                    }
+                } catch(ex) { 
+                    alert("Erreur de lecture : " + ex.message); 
+                }
+                input.value = ''; 
+            };
+            reader.readAsText(file);
+        }
+
         function copyToClipboard(text) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
