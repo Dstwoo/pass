@@ -5,653 +5,594 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#e63946">
-    <title>Carnet de codes Ambulancier</title>
+    <meta name="theme-color" content="#dc2626">
+    <title>Carnet Ambulancier V5</title>
     
-    <!-- ICONE INTEGRÉE (Base64 du SVG) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlNjM5NDY7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojYjAxMDIwO3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjQwIiBmaWxsPSJ1cmwoI2dyYWQpIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjE1Ii8+PHBhdGggZD0iTTIxNiAxMDAgSDI5NiBWMjE2IEg0MTIgVjI5NiBIMjk2IFY0MTIgSDIxNiBWMjk2IEgxMDAgVjIxNiBIMjE2IFoiIGZpbGw9IndoaXRlIiAvPjx0ZXh0IHg9IjUwJSIgeT0iNTQlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE2MCIgZmlsbD0iIzFkMzU1NyI+IzwvdGV4dD48L3N2Zz4=">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlNjM5NDY7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojYjAxMDIwO3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjQwIiBmaWxsPSJ1cmwoI2dyYWQpIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjE1Ii8+PHBhdGggZD0iTTIxNiAxMDAgSDI5NiBWMjE2IEg0MTIgVjI5NiBIMjk2IFY0MTIgSDIxNiBWMjk2IEgxMDAgVjIxNiBIMjE2IFoiIGZpbGw9IndoaXRlIiAvPjx0ZXh0IHg9IjUwJSIgeT0iNTQlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE2MCIgZmlsbD0iIzFkMzU1NyI+IzwvdGV4dD48L3N2Zz4=">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* --- Variables et Thème --- */
-        :root {
-            /* Thème Clair (Défaut) */
-            --color-primary: #e63946;
-            --color-secondary: #457b9d;
-            --color-bg: #f1faee;
-            --color-card-bg: #ffffff;
-            --color-text: #1d3557;
-            --color-text-light: #666;
-            --color-code-bg: #f8f8f8;
-            --color-success: #2a9d8f;
-            --color-warning: #f77f00;
-            --padding-base: 1rem;
-            --button-size: 3rem;
-            --radius: 0.75rem;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Thème Sombre (Activé via data-theme="dark") */
-        [data-theme="dark"] {
-            --color-primary: #ff5a68;
-            --color-secondary: #6fa2c5;
-            --color-bg: #121212;
-            --color-card-bg: #1e1e1e;
-            --color-text: #e0e0e0;
-            --color-text-light: #aaa;
-            --color-code-bg: #2d2d2d;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            padding-bottom: 80px; /* Espace pour le FAB */
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* --- En-tête --- */
-        .header {
-            background-color: var(--color-primary);
-            color: white;
-            padding: 1rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            justify-content: center;
-            flex-grow: 1;
-        }
-
-        .header-logo-svg {
-            height: 1.8em;
-            width: 1.8em;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            padding: 0 0.5rem;
-            line-height: 1;
-        }
-
-        /* --- Layout --- */
-        .container {
-            padding: var(--padding-base);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* --- Formulaires & Boutons --- */
-        input, select, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            background-color: var(--color-card-bg);
-            color: var(--color-text);
-        }
-
-        .button {
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
-
-        .button:active { transform: scale(0.98); }
-
-        .btn-primary { background-color: var(--color-primary); color: white; }
-        .btn-secondary { background-color: var(--color-secondary); color: white; }
-        .btn-success { background-color: var(--color-success); color: white; }
-        .btn-danger { background-color: var(--color-warning); color: #fff; }
-        .btn-outline { background: transparent; border: 1px solid currentColor; color: inherit; }
-        .btn-whatsapp { background-color: #25D366; color: white; }
-        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
-        .btn-block { width: 100%; }
-
-        /* --- Cartes et Sections --- */
-        .card {
-            background-color: var(--color-card-bg);
-            padding: 1rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 1rem;
-            transition: background-color 0.3s;
-        }
-
-        .section-header {
-            border-bottom: 1px solid var(--color-secondary);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            color: var(--color-secondary);
-            font-weight: 600;
-        }
-
-        /* --- Liste des Lieux --- */
-        .place-card {
-            background-color: var(--color-card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 1rem;
-            overflow: hidden;
-            border-left: 5px solid var(--color-primary);
-            transition: background-color 0.3s;
-        }
-
-        .place-content { padding: 1rem; }
-
-        .place-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .place-title h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: var(--color-text);
-        }
-        .place-city {
-            color: var(--color-text-light);
-            font-size: 0.9rem;
-        }
-
-        .place-meta {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .badge {
-            background-color: var(--color-secondary);
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .distance-badge {
-            margin-top: 4px;
-            font-weight: bold;
-            color: var(--color-primary);
-            font-size: 0.9rem;
-        }
-
-        .codes-block {
-            background-color: var(--color-code-bg);
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            margin: 0.75rem 0;
-            font-family: monospace;
-            border: 1px dashed #ccc;
-        }
-
-        .code-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.25rem;
-        }
-        .code-row:last-child { margin-bottom: 0; }
-        .code-label { font-weight: bold; color: var(--color-text-light); font-size: 0.9rem; }
-        .code-value { font-size: 1.1rem; color: var(--color-text); font-weight: 700; }
-
-        .place-actions {
-            background-color: rgba(0,0,0,0.03);
-            padding: 0.5rem 1rem;
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        /* --- Modale --- */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(3px);
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            background-color: var(--color-card-bg);
-            margin: 10% auto;
-            padding: 0;
-            border-radius: var(--radius);
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: slideUp 0.3s ease-out;
-        }
-        
-        .modal-header {
-            background-color: var(--color-secondary);
-            color: white;
-            padding: 1rem;
-            border-radius: var(--radius) var(--radius) 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-body { padding: 1.5rem; }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* --- FAB (Floating Action Button) --- */
-        .fab {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 50%;
-            background-color: var(--color-primary);
-            color: white;
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4);
-            border: none;
-            cursor: pointer;
-            z-index: 90;
-            transition: transform 0.2s;
-        }
-        .fab:hover { transform: scale(1.1); }
-
-        /* --- Toast Notification --- */
-        #toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 50px;
-            padding: 16px;
-            position: fixed;
-            z-index: 2000;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-size: 0.9rem;
-        }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-
-        /* Utilitaires */
-        .hidden { display: none; }
-        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
-    </style>
+    <!-- Tailwind CSS (Via CDN pour rester en un seul fichier) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Configuration Tailwind pour le mode sombre -->
     <script>
-        (function() {
-            const storedTheme = localStorage.getItem('theme');
-            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (storedTheme === 'dark' || (!storedTheme && systemDark)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#dc2626', // Rouge Urgence
+                        secondary: '#2563eb', // Bleu Samusocial/Ambu
+                        darkbg: '#18181b', // Zinc 900
+                        carddark: '#27272a', // Zinc 800
+                    }
+                }
             }
-        })();
+        }
     </script>
+
+    <!-- Font Awesome pour les icônes (SVG légers) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Styles spécifiques non gérés par Tailwind */
+        body {
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none; /* Empêche le rebond sur mobile */
+        }
+        
+        /* Masquer la scrollbar tout en gardant le scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        
+        /* Animation pour les Toasts et Modales */
+        @keyframes slideUp {
+            from { transform: translate(-50%, 100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .toast-anim {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .modal-anim {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-900 dark:bg-darkbg dark:text-gray-100 transition-colors duration-300 min-h-screen pb-24">
 
-    <!-- Header -->
-    <div class="header">
-        <div style="width: 2rem;"></div>
-        <div class="header-title">
-            <!-- LOGO SVG INTEGRE -->
-            <svg class="header-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <defs>
-                <linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:1" />
-                </linearGradient>
-              </defs>
-              <circle cx="256" cy="256" r="240" fill="url(#gradHeader)" stroke="white" stroke-width="15"/>
-              <path d="M216 100 H296 V216 H412 V296 H296 V412 H216 V296 H100 V216 H216 Z" fill="#e63946" />
-              <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="160" fill="#1d3557">#</text>
-            </svg>
-            <span style="margin-left: 0.5rem;">Carnet Ambulancier</span>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Changer le thème">
-            🌓
-        </button>
-    </div>
-
-    <div class="container">
-        <!-- Status & GPS -->
-        <div class="card">
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <div style="font-size: 0.9rem; font-weight: 600; color: var(--color-secondary);">
-                    <span id="location-text">Position actuelle : Recherche en cours...</span>
-                    <span id="last-update-text"></span>
+    <!-- En-tête Fixe -->
+    <header class="fixed top-0 left-0 right-0 bg-primary text-white shadow-lg z-50 transition-all duration-300">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
+                    <i class="fa-solid fa-truck-medical text-xl"></i>
                 </div>
-                <div style="font-size: 0.75rem; color: var(--color-primary);">
-                    ⚠️ GPS : Nécessite HTTPS ou file://
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Carnet V5</h1>
+                    <p class="text-xs text-red-100 opacity-90" id="header-stats">Chargement...</p>
                 </div>
-                <button class="button btn-secondary btn-sm" onclick="updateLocation()" style="width: 100%;">Actualiser ma position</button>
             </div>
+            <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-white/10 active:scale-95 transition-transform" aria-label="Thème">
+                <i class="fa-solid fa-moon text-xl dark:hidden"></i>
+                <i class="fa-solid fa-sun text-xl hidden dark:block text-yellow-300"></i>
+            </button>
         </div>
+    </header>
 
-        <!-- Recherche -->
-        <div class="card">
-            <input type="text" id="search-input" placeholder="Rechercher (nom, ville, digicode...)" oninput="filterAndRenderPlaces()">
-            <div class="filter-grid">
-                <select id="type-filter" onchange="filterAndRenderPlaces()">
-                    <option value="">Tous types</option>
+    <!-- Contenu Principal -->
+    <main class="max-w-3xl mx-auto px-4 pt-20">
+        
+        <!-- Carte GPS & Recherche -->
+        <div class="bg-white dark:bg-carddark rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700">
+            <!-- GPS Status -->
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <i class="fa-solid fa-location-crosshairs text-primary"></i>
+                    <span id="gps-status">Recherche GPS...</span>
+                </div>
+                <button onclick="updateLocation()" class="text-primary hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1 rounded-full text-xs font-bold border border-primary transition-colors">
+                    Actualiser
+                </button>
+            </div>
+
+            <!-- Barre de recherche -->
+            <div class="relative">
+                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="search-input" 
+                    class="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg pl-10 pr-4 py-3 text-base focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    placeholder="Rechercher (Nom, Ville...)" oninput="filterAndRenderPlaces()">
+            </div>
+
+            <!-- Filtres Rapides -->
+            <div class="grid grid-cols-2 gap-2 mt-3">
+                <select id="type-filter" onchange="filterAndRenderPlaces()" class="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm outline-none">
+                    <option value="">🏥 Tous types</option>
                     <option value="Hôpital">Hôpital</option>
                     <option value="Clinique">Clinique</option>
                     <option value="Résidence">Résidence</option>
-                    <option value="Maison de retraite / EHPAD">Maison de retraite / EHPAD</option>
+                    <option value="EHPAD">Maison de retraite</option>
                     <option value="Parking">Parking</option>
                     <option value="Autre">Autre</option>
                 </select>
-                <select id="dist-filter" onchange="filterAndRenderPlaces()">
-                    <option value="0">Toute distance</option>
-                    <option value="2"> < 2 km</option>
-                    <option value="10"> < 10 km</option>
-                    <option value="50"> < 50 km</option>
+                <select id="dist-filter" onchange="filterAndRenderPlaces()" class="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm outline-none">
+                    <option value="0">🌍 Toute distance</option>
+                    <option value="0.2">📍 &lt; 200 m</option>
+                    <option value="5">📍 &lt; 5 km</option>
+                    <option value="20">📍 &lt; 20 km</option>
                 </select>
             </div>
         </div>
 
-        <!-- Outils Data -->
-        <div style="text-align: center; margin-bottom: 1rem;">
-             <button class="button btn-outline btn-sm" onclick="toggleDataTools()">
-                ⚙️ Partage & Sauvegarde
-             </button>
-        </div>
-        <div id="data-tools" class="card hidden">
-            <div class="section-header">Gestion des Données</div>
-            <p style="font-size: 0.8rem; margin-bottom:1rem">
-                Partagez votre base avec vos collègues ou sauvegardez-la.
-            </p>
+        <!-- Bouton Outils (Accès rapide) -->
+        <button onclick="toggleTools()" class="w-full mb-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2 hover:text-primary transition-colors">
+            <i class="fa-solid fa-sliders"></i> Options de sauvegarde & partage
+        </button>
+
+        <!-- Panel Outils (Caché par défaut) -->
+        <div id="tools-panel" class="hidden bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4 border border-gray-200 dark:border-gray-700">
+            <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-3">Gestion de base de données</h3>
             
-            <div style="display:flex; flex-direction:column; gap:0.5rem">
-                <!-- Export / Partage Global -->
-                <div style="display:flex; gap:0.5rem">
-                    <button class="button btn-whatsapp btn-block" onclick="shareGlobalData()">
-                        📤 Partager la base
-                    </button>
-                    <button class="button btn-secondary btn-block" onclick="exportData()">
-                        💾 Télécharger
-                    </button>
-                </div>
-
-                <hr style="width:100%; border:0; border-top:1px dashed #ccc; margin: 0.5rem 0;">
-
-                <!-- Import -->
-                <p style="font-size:0.8rem; margin:0; font-weight:bold">Importer un fichier :</p>
-                <div style="display:flex; gap:0.5rem">
-                    <button class="button btn-primary btn-block" onclick="triggerImport('merge')">
-                        🔄 Fusionner (Sans écraser)
-                    </button>
-                    <button class="button btn-danger btn-block" onclick="triggerImport('replace')">
-                        ⚠️ Remplacer tout
-                    </button>
-                </div>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <button onclick="shareGlobalData()" class="flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fa-brands fa-whatsapp"></i> Partager Tout
+                </button>
+                <button onclick="exportData()" class="flex items-center justify-center gap-2 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fa-solid fa-download"></i> Sauvegarder
+                </button>
             </div>
-            
-            <input type="file" id="import-file" accept=".json" style="display: none;" onchange="processImportFile(this)">
+
+            <div class="border-t border-gray-200 dark:border-gray-600 pt-3">
+                <p class="text-xs text-gray-500 mb-2">📥 Importer un fichier reçu :</p>
+                
+                <button onclick="triggerImport('merge')" class="w-full mb-3 flex flex-col items-center justify-center gap-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:hover:bg-blue-900/60 dark:text-blue-200 py-3 rounded-xl font-bold transition-colors border border-blue-200 dark:border-blue-800">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-plus-circle"></i> Importer / Fusionner</span>
+                    <span class="text-[10px] font-normal opacity-80">(Ajoute les nouveaux & Demande si conflit)</span>
+                </button>
+
+                <div class="flex justify-end mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                     <button onclick="triggerImport('replace')" class="text-xs text-red-500 hover:text-red-700 dark:text-red-400 underline">
+                        ⚠️ Restaurer sauvegarde externe (Remplace tout)
+                    </button>
+                </div>
+                
+                <input type="file" id="import-file" accept=".json" class="hidden" onchange="processImportFile(this)">
+            </div>
         </div>
 
-        <!-- Liste -->
-        <div id="places-list"></div>
-        <div id="empty-state" class="hidden" style="text-align: center; padding: 2rem; color: var(--color-text-light);">
-            Aucun lieu trouvé.
+        <!-- Liste des Lieux -->
+        <div id="places-list" class="space-y-3 pb-20">
+            <!-- Injecté par JS -->
         </div>
-    </div>
 
-    <!-- FAB Add -->
-    <button class="fab" onclick="openModal()">+</button>
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-12 px-4">
+            <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400 text-3xl">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400">Aucun lieu trouvé.</p>
+            <p class="text-xs text-gray-400 mt-2">Commencez par ajouter un lieu ou importer une sauvegarde.</p>
+        </div>
+    </main>
+
+    <!-- FAB (Floating Action Button) -->
+    <button onclick="openModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-red-600/30 flex items-center justify-center text-2xl hover:scale-105 active:scale-95 transition-all z-40">
+        <i class="fa-solid fa-plus"></i>
+    </button>
 
     <!-- Modal Formulaire -->
-    <div id="place-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span id="modal-title">Nouveau Lieu</span>
-                <span onclick="closeModal()" style="cursor:pointer; font-size: 1.5rem;">&times;</span>
+    <div id="modal-form" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute bottom-0 left-0 right-0 md:top-1/2 md:left-1/2 md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg bg-white dark:bg-carddark rounded-t-2xl md:rounded-2xl p-6 modal-anim max-h-[90vh] overflow-y-auto">
+            
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold" id="modal-title">Nouveau Lieu</h2>
+                <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200">
+                    <i class="fa-solid fa-times"></i>
+                </button>
             </div>
-            <div class="modal-body">
-                <form id="place-form" onsubmit="handleFormSubmit(event)">
-                    <input type="hidden" id="place-id">
-                    
-                    <label>Nom & Type *</label>
-                    <input type="text" id="nom_lieu" required placeholder="Ex: Résidence Les Lilas">
-                    <select id="type_lieu" required>
-                        <option value="Hôpital">Hôpital</option>
-                        <option value="Clinique">Clinique</option>
-                        <option value="Résidence" selected>Résidence</option>
-                        <option value="Maison de retraite / EHPAD">Maison de retraite / EHPAD</option>
-                        <option value="Parking">Parking</option>
-                        <option value="Autre">Autre</option>
-                    </select>
 
-                    <label>Adresse & Ville</label>
-                    <input type="text" id="adresse" placeholder="12 rue de la Paix">
-                    <input type="text" id="ville" placeholder="Paris">
+            <form id="place-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <input type="hidden" id="place-id">
+                
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nom du lieu</label>
+                    <input type="text" id="nom_lieu" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="Ex: Résidence Les Lilas">
+                </div>
 
-                    <label style="color: var(--color-primary); font-weight:bold;">Codes d'accès *</label>
-                    <div style="display:flex; gap:0.5rem">
-                        <input type="text" id="code_entree_principal" required placeholder="Principal (Portail)" style="font-weight:bold;">
-                        <input type="text" id="code_secondaire" placeholder="Secondaire (Hall)">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Type</label>
+                        <select id="type_lieu" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none">
+                            <option value="Résidence">Résidence</option>
+                            <option value="Hôpital">Hôpital</option>
+                            <option value="Clinique">Clinique</option>
+                            <option value="EHPAD">EHPAD</option>
+                            <option value="Parking">Parking</option>
+                            <option value="Autre">Autre</option>
+                        </select>
                     </div>
-
-                    <label>Note / Commentaire</label>
-                    <textarea id="commentaire" rows="2" placeholder="Ex: Batiment B, 3ème étage, ascenseur gauche"></textarea>
-
-                    <label>Position GPS</label>
-                    <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-                        <input type="number" id="latitude" step="any" placeholder="Lat">
-                        <input type="number" id="longitude" step="any" placeholder="Lon">
-                        <button type="button" class="button btn-secondary" onclick="fillGPS()">📍 Moi</button>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Ville</label>
+                        <input type="text" id="ville" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="Paris">
                     </div>
+                </div>
 
-                    <div style="display:flex; gap:1rem; margin-top:1rem;">
-                        <button type="button" class="button btn-outline btn-block" onclick="closeModal()">Annuler</button>
-                        <button type="submit" class="button btn-success btn-block">Enregistrer</button>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Adresse</label>
+                    <input type="text" id="adresse" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="12 rue de la Paix">
+                </div>
+
+                <div class="bg-red-50 dark:bg-red-900/10 p-3 rounded-lg border border-red-100 dark:border-red-900/30">
+                    <label class="block text-xs font-bold text-primary uppercase mb-2">🔐 Codes d'accès</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="code_entree_principal" class="w-full bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/50 rounded-lg p-3 text-center font-mono font-bold text-lg outline-none focus:ring-2 focus:ring-red-500" placeholder="Portail">
+                        <input type="text" id="code_secondaire" class="w-full bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/50 rounded-lg p-3 text-center font-mono text-lg outline-none focus:ring-2 focus:ring-red-500" placeholder="Hall / Bis">
                     </div>
-                </form>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Commentaire</label>
+                    <textarea id="commentaire" rows="2" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="Bâtiment B, 3ème étage..."></textarea>
+                </div>
+
+                <!-- GPS caché mais rempli -->
+                <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                    <div class="text-sm">
+                        <span id="gps-coords-display" class="text-gray-500">Pas de GPS enregistré</span>
+                        <input type="hidden" id="latitude">
+                        <input type="hidden" id="longitude">
+                    </div>
+                    <button type="button" onclick="fillGPSForm()" class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fa-solid fa-location-dot mr-1"></i> Ma position
+                    </button>
+                </div>
+
+                <div class="pt-2 grid grid-cols-2 gap-3">
+                    <button type="button" onclick="closeModal()" class="py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Annuler</button>
+                    <button type="submit" class="py-3 rounded-xl font-bold bg-primary text-white hover:bg-red-700 shadow-lg shadow-red-500/20 transition-colors">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Confirmation Suppression -->
+    <div id="modal-confirm" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="relative bg-white dark:bg-carddark rounded-2xl p-6 max-w-sm w-full shadow-2xl modal-anim text-center">
+            <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600 dark:text-red-400 text-2xl">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Supprimer ce lieu ?</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Cette action est irréversible.</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="closeConfirm()" class="py-2.5 rounded-xl font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Annuler</button>
+                <button id="confirm-btn" class="py-2.5 rounded-xl font-bold bg-red-600 text-white shadow-lg shadow-red-600/20">Supprimer</button>
             </div>
         </div>
     </div>
 
-    <!-- Toast -->
-    <div id="toast">Notification</div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900/90 dark:bg-white/90 text-white dark:text-gray-900 px-6 py-3 rounded-full shadow-xl z-[70] hidden items-center gap-3 backdrop-blur-md">
+        <span id="toast-icon"></span>
+        <span id="toast-message" class="text-sm font-medium">Notification</span>
+    </div>
 
     <script>
-        // --- GESTION DU THEME ---
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const target = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', target);
-            localStorage.setItem('theme', target);
-        }
+        // --- ETAT ET DONNEES ---
+        let places = [];
+        let currentPosition = null;
+        let deleteTargetId = null;
 
-        // --- CONSTANTES ET ETAT ---
-        var places = [];
-        var currentPosition = null;
-        var storageAvailable = true;
-        var importMode = 'merge'; 
-
-        // Elements DOM pour le GPS
-        var locationTextEl = document.getElementById('location-text');
-        var lastUpdateTextEl = document.getElementById('last-update-text');
-
-        // --- SAFE STORAGE INIT ---
-        try {
-            const stored = localStorage.getItem('ambu_codes_db');
-            places = stored ? JSON.parse(stored) : [];
-            
-            // Migration automatique
-            let migrationNeeded = false;
-            places = places.map(p => {
-                if (p.nom && !p.nom_lieu) {
-                    migrationNeeded = true;
-                    return {
-                        id: p.id,
-                        nom_lieu: p.nom,
-                        type_lieu: p.type === 'EHPAD' ? 'Maison de retraite / EHPAD' : p.type,
-                        adresse: p.adresse || "",
-                        ville: p.ville || "",
-                        code_entree_principal: p.code1 || "",
-                        code_secondaire: p.code2 || "",
-                        commentaire: p.note || "",
-                        latitude: p.lat,
-                        longitude: p.lon,
-                        date_maj: p.updated || new Date().toISOString()
-                    };
-                }
-                return p;
-            });
-
-            if (migrationNeeded) {
-                console.log("Migration des données effectuée.");
-                localStorage.setItem('ambu_codes_db', JSON.stringify(places));
+        // --- THEME & INIT ---
+        function initTheme() {
+            const stored = localStorage.getItem('theme');
+            const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (stored === 'dark' || (!stored && sysDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
             }
-
-        } catch (e) {
-            console.error("Erreur d'accès au LocalStorage:", e);
-            storageAvailable = false;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!storageAvailable) showToast("⚠️ Mode Privé : Pas de sauvegarde !");
-            updateLocation();
-            renderPlaces(); 
-        });
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
 
-        // --- SYSTEME GPS ---
-        function degToRad(deg) { return deg * (Math.PI / 180); }
+        // --- PERSISTANCE ---
+        function loadData() {
+            try {
+                const stored = localStorage.getItem('ambu_codes_db');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && parsed.length > 0) {
+                        places = parsed.map(normalizePlace);
+                    } else {
+                        places = []; // Base vide par défaut
+                    }
+                } else {
+                    places = []; // Base vide par défaut
+                }
+            } catch (e) {
+                console.error("Erreur chargement", e);
+                places = [];
+            }
+            updateStats();
+        }
 
+        function normalizePlace(p) {
+             return {
+                id: p.id,
+                nom_lieu: p.nom_lieu || p.nom || "Inconnu",
+                type_lieu: (p.type_lieu || p.type) === 'Maison de retraite / EHPAD' ? 'EHPAD' : (p.type_lieu || p.type || "Autre"),
+                adresse: p.adresse || "",
+                ville: p.ville || "",
+                code_entree_principal: p.code_entree_principal || p.code1 || "",
+                code_secondaire: p.code_secondaire || p.code2 || "",
+                commentaire: p.commentaire || p.note || "",
+                latitude: parseFloat(p.latitude || p.lat),
+                longitude: parseFloat(p.longitude || p.lon),
+                date_maj: p.date_maj || p.updated || new Date().toISOString()
+            };
+        }
+
+        function saveData() {
+            localStorage.setItem('ambu_codes_db', JSON.stringify(places));
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('header-stats').innerText = `${places.length} lieux enregistrés`;
+        }
+
+        // --- GPS ---
         function calculateDistance(lat1, lon1, lat2, lon2) {
+            if (!lat1 || !lon1 || !lat2 || !lon2) return Infinity;
             const R = 6371; 
-            if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) return Infinity;
-            const dLat = degToRad(lat2 - lat1);
-            const dLon = degToRad(lon2 - lon1);
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                      Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) *
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
 
         function updateLocation() {
+            const statusEl = document.getElementById('gps-status');
+            statusEl.innerText = "Recherche...";
+            statusEl.className = "text-yellow-600 dark:text-yellow-400 animate-pulse";
+            
             if (!navigator.geolocation) {
-                locationTextEl.textContent = "Géolocalisation non supportée par votre navigateur.";
-                renderPlaces();
+                statusEl.innerText = "GPS non supporté";
                 return;
             }
-            locationTextEl.textContent = "Position actuelle : Recherche en cours...";
-            lastUpdateTextEl.textContent = "";
-            currentPosition = null;
+
             navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    currentPosition = {
-                        lat: position.coords.latitude,
-                        lon: position.coords.longitude
-                    };
-                    const now = new Date();
-                    locationTextEl.textContent = `Position OK (Lat: ${currentPosition.lat.toFixed(4)}, Lon: ${currentPosition.lon.toFixed(4)})`;
-                    lastUpdateTextEl.textContent = `MàJ: ${now.toLocaleTimeString('fr-FR')}`;
+                (pos) => {
+                    currentPosition = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                    statusEl.innerText = "Position GPS OK";
+                    statusEl.className = "text-green-600 dark:text-green-400 font-bold";
                     filterAndRenderPlaces();
-                    showToast("Position GPS actualisée.");
                 },
-                (error) => {
-                    let errorMessage = "Erreur de géolocalisation : ";
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED: errorMessage += "Accès refusé."; break;
-                        case error.POSITION_UNAVAILABLE: errorMessage += "Position indisponible."; break;
-                        case error.TIMEOUT: errorMessage += "Délai expiré."; break;
-                        default: errorMessage += "Erreur inconnue."; break;
-                    }
-                    locationTextEl.textContent = errorMessage;
-                    lastUpdateTextEl.textContent = "Tri par nom.";
-                    currentPosition = null;
-                    filterAndRenderPlaces();
-                    showToast(errorMessage);
+                (err) => {
+                    console.error(err);
+                    statusEl.innerText = "Erreur GPS";
+                    statusEl.className = "text-red-500";
+                    showToast("Impossible d'obtenir la position", "error");
+                    filterAndRenderPlaces(); 
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
         }
 
-        function fillGPS() {
-            if(currentPosition) {
-                document.getElementById('latitude').value = currentPosition.lat.toFixed(6);
-                document.getElementById('longitude').value = currentPosition.lon.toFixed(6);
-            } else {
-                updateLocation();
-                showToast("Réessayez la localisation...");
+        // --- RENDER ---
+        function formatDist(km) {
+            if (km === Infinity || isNaN(km)) return "";
+            if (km < 1) return `<span class="text-green-600 dark:text-green-400 font-bold text-xs"><i class="fa-solid fa-person-walking"></i> ${Math.round(km * 1000)} m</span>`;
+            return `<span class="text-blue-600 dark:text-blue-400 font-bold text-xs"><i class="fa-solid fa-car"></i> ${km.toFixed(1)} km</span>`;
+        }
+
+        function getIconForType(type) {
+            switch(type) {
+                case 'Hôpital': return 'fa-hospital text-red-500';
+                case 'Clinique': return 'fa-heart-pulse text-pink-500';
+                case 'Résidence': return 'fa-building text-blue-500';
+                case 'EHPAD': return 'fa-wheelchair text-orange-500';
+                case 'Parking': return 'fa-square-parking text-gray-500';
+                default: return 'fa-map-pin text-gray-400';
             }
         }
 
-        // --- LOGIQUE METIER ---
-        function saveDB() {
-            if (storageAvailable) {
-                try {
-                    localStorage.setItem('ambu_codes_db', JSON.stringify(places));
-                } catch (e) {
-                    showToast("Erreur de sauvegarde !");
+        function filterAndRenderPlaces() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const typeFilter = document.getElementById('type-filter').value;
+            const distFilter = parseFloat(document.getElementById('dist-filter').value);
+
+            let filtered = places.map(p => {
+                let dist = Infinity;
+                if (currentPosition && p.latitude && p.longitude) {
+                    dist = calculateDistance(currentPosition.lat, currentPosition.lon, p.latitude, p.longitude);
                 }
+                return { ...p, _dist: dist };
+            });
+
+            filtered = filtered.filter(p => {
+                const matchTerm = (p.nom_lieu || "").toLowerCase().includes(term) || 
+                                  (p.ville || "").toLowerCase().includes(term);
+                const matchType = !typeFilter || p.type_lieu === typeFilter;
+                const matchDist = distFilter === 0 || p._dist <= distFilter;
+                return matchTerm && matchType && matchDist;
+            });
+
+            // Tri : Distance si dispo, sinon Nom
+            if (currentPosition) {
+                filtered.sort((a, b) => a._dist - b._dist);
+            } else {
+                filtered.sort((a, b) => (a.nom_lieu || "").localeCompare(b.nom_lieu || ""));
             }
-            renderPlaces();
+
+            const container = document.getElementById('places-list');
+            container.innerHTML = '';
+
+            if (filtered.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('empty-state').classList.add('hidden');
+            }
+
+            filtered.forEach(p => {
+                const iconClass = getIconForType(p.type_lieu);
+                const distBadge = formatDist(p._dist);
+                
+                const wazeUrl = (p.latitude && p.longitude) ? `https://waze.com/ul?ll=${p.latitude},${p.longitude}&navigate=yes` : null;
+                const mapsUrl = (p.latitude && p.longitude) 
+                    ? `https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}` 
+                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
+
+                const html = `
+                <div class="bg-white dark:bg-carddark rounded-xl p-4 shadow-sm border-l-4 border-primary hover:shadow-md transition-shadow relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1 w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center shrink-0">
+                                <i class="fa-solid ${iconClass}"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg leading-tight">${p.nom_lieu}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">${p.adresse} ${p.ville}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] uppercase font-bold tracking-wider bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-500">${p.type_lieu}</span>
+                                    ${distBadge}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="editPlace('${p.id}')" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bloc Codes -->
+                    <div class="flex flex-col gap-2 my-3">
+                        ${p.code_entree_principal ? `
+                        <div onclick="copyCode('${p.code_entree_principal}')" class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg p-3 flex justify-between items-center cursor-pointer active:scale-[0.98] transition-transform">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Portail</span>
+                            <div class="flex items-center gap-3">
+                                <span class="font-mono text-xl font-bold tracking-wider text-primary">${p.code_entree_principal}</span>
+                                <i class="fa-regular fa-copy text-gray-400"></i>
+                            </div>
+                        </div>` : ''}
+                        
+                        ${p.code_secondaire ? `
+                        <div onclick="copyCode('${p.code_secondaire}')" class="bg-gray-50 dark:bg-gray-900/50 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-2 flex justify-between items-center cursor-pointer active:scale-[0.98] transition-transform">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Hall / Bis</span>
+                            <div class="flex items-center gap-3">
+                                <span class="font-mono text-lg font-bold text-gray-700 dark:text-gray-300">${p.code_secondaire}</span>
+                                <i class="fa-regular fa-copy text-gray-400"></i>
+                            </div>
+                        </div>` : ''}
+                    </div>
+
+                    ${p.commentaire ? `<div class="bg-yellow-50 dark:bg-yellow-900/10 p-2 rounded text-sm text-yellow-800 dark:text-yellow-200 mb-3 border border-yellow-100 dark:border-yellow-900/30"><i class="fa-regular fa-note-sticky mr-1"></i> ${p.commentaire}</div>` : ''}
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                        ${wazeUrl ? `<a href="${wazeUrl}" target="_blank" class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-300 py-2 rounded-lg text-center text-sm font-bold transition-colors"><i class="fa-brands fa-waze mr-1"></i> Waze</a>` : ''}
+                        <a href="${mapsUrl}" target="_blank" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 py-2 rounded-lg text-center text-sm font-bold transition-colors"><i class="fa-solid fa-map-location-dot mr-1"></i> Maps</a>
+                        <button onclick="sharePlaceAsFile('${p.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 transition-colors" title="Transférer ce lieu (Fichier)">
+                            <i class="fa-solid fa-share-nodes text-lg"></i>
+                        </button>
+                        <button onclick="sharePlace('${p.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40 transition-colors">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                        </button>
+                         <button onclick="askDelete('${p.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        // --- ACTIONS ---
+        async function copyCode(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast(`Code ${text} copié !`, 'success');
+            } catch (err) {
+                // Fallback ancien navigateur
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast(`Code ${text} copié !`, 'success');
+            }
+        }
+
+        function toggleTools() {
+            document.getElementById('tools-panel').classList.toggle('hidden');
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = "";
+            document.getElementById('type-filter').value = "";
+            document.getElementById('dist-filter').value = "0";
+            filterAndRenderPlaces();
+        }
+
+        // --- MODALES ---
+        function openModal(isEdit = false) {
+            const modal = document.getElementById('modal-form');
+            modal.classList.remove('hidden');
+            if (!isEdit) {
+                document.getElementById('place-form').reset();
+                document.getElementById('place-id').value = '';
+                document.getElementById('modal-title').innerText = "Ajouter un lieu";
+                document.getElementById('gps-coords-display').innerText = "Pas de GPS enregistré";
+                // Auto fill GPS if available
+                if(currentPosition) fillGPSForm();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-form').classList.add('hidden');
+        }
+
+        function fillGPSForm() {
+            if (currentPosition) {
+                document.getElementById('latitude').value = currentPosition.lat;
+                document.getElementById('longitude').value = currentPosition.lon;
+                document.getElementById('gps-coords-display').innerText = `${currentPosition.lat.toFixed(4)}, ${currentPosition.lon.toFixed(4)}`;
+                document.getElementById('gps-coords-display').className = "text-green-600 dark:text-green-400 font-mono text-sm";
+            } else {
+                showToast("Activez le GPS d'abord", "error");
+                updateLocation();
+            }
         }
 
         function handleFormSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('place-id').value;
-            const data = {
+            const lat = document.getElementById('latitude').value;
+            const lon = document.getElementById('longitude').value;
+
+            const placeData = {
                 id: id || Date.now().toString(36) + Math.random().toString(36).substr(2),
                 nom_lieu: document.getElementById('nom_lieu').value,
                 type_lieu: document.getElementById('type_lieu').value,
@@ -660,315 +601,283 @@
                 code_entree_principal: document.getElementById('code_entree_principal').value,
                 code_secondaire: document.getElementById('code_secondaire').value,
                 commentaire: document.getElementById('commentaire').value,
-                latitude: parseFloat(document.getElementById('latitude').value) || null,
-                longitude: parseFloat(document.getElementById('longitude').value) || null,
+                latitude: lat ? parseFloat(lat) : null,
+                longitude: lon ? parseFloat(lon) : null,
                 date_maj: new Date().toISOString()
             };
 
             if (id) {
                 const idx = places.findIndex(p => p.id === id);
-                places[idx] = data;
-                showToast("Lieu modifié");
+                if (idx !== -1) places[idx] = placeData;
             } else {
-                places.push(data);
-                showToast("Lieu ajouté");
+                places.push(placeData);
             }
-            saveDB();
+
+            saveData();
             closeModal();
             filterAndRenderPlaces();
-        }
-
-        function deletePlace(id) {
-            if(confirm("Supprimer définitivement ce lieu ?")) {
-                places = places.filter(p => p.id !== id);
-                saveDB();
-                showToast("Lieu supprimé");
-                filterAndRenderPlaces();
-            }
+            showToast(id ? "Lieu modifié" : "Lieu ajouté", "success");
         }
 
         function editPlace(id) {
             const p = places.find(place => place.id === id);
-            if(!p) return;
+            if (!p) return;
+
             document.getElementById('place-id').value = p.id;
             document.getElementById('nom_lieu').value = p.nom_lieu;
             document.getElementById('type_lieu').value = p.type_lieu;
-            document.getElementById('adresse').value = p.adresse || '';
-            document.getElementById('ville').value = p.ville || '';
-            document.getElementById('code_entree_principal').value = p.code_entree_principal || '';
-            document.getElementById('code_secondaire').value = p.code_secondaire || '';
-            document.getElementById('commentaire').value = p.commentaire || '';
+            document.getElementById('adresse').value = p.adresse;
+            document.getElementById('ville').value = p.ville;
+            document.getElementById('code_entree_principal').value = p.code_entree_principal;
+            document.getElementById('code_secondaire').value = p.code_secondaire;
+            document.getElementById('commentaire').value = p.commentaire;
             document.getElementById('latitude').value = p.latitude || '';
             document.getElementById('longitude').value = p.longitude || '';
-            document.getElementById('modal-title').innerText = "Modifier Lieu";
-            document.getElementById('place-modal').style.display = 'block';
-        }
-
-        // --- RENDER & FILTER ---
-        function formatDistance(km) {
-            if (typeof km !== 'number' || isNaN(km) || km === Infinity) {
-                return '<span class="distance-info">--</span>';
-            }
-            if (km < 1) return `${Math.round(km * 1000)} m`;
-            return `${km.toFixed(1)} km`;
-        }
-
-        function filterAndRenderPlaces() {
-            const term = document.getElementById('search-input').value.toLowerCase();
-            const type = document.getElementById('type-filter').value;
-            const maxDist = parseFloat(document.getElementById('dist-filter').value);
-
-            let filtered = places.map(p => {
-                let dist = Infinity;
-                if (currentPosition && p.latitude !== null && p.longitude !== null) {
-                    dist = calculateDistance(
-                        currentPosition.lat, currentPosition.lon,
-                        parseFloat(p.latitude), parseFloat(p.longitude)
-                    );
-                }
-                return { ...p, _dist: dist };
-            });
-
-            filtered = filtered.filter(p => {
-                const matchTerm = (p.nom_lieu || "").toLowerCase().includes(term) || 
-                                  (p.ville || "").toLowerCase().includes(term) || 
-                                  (p.commentaire || "").toLowerCase().includes(term);
-                const matchType = !type || p.type_lieu === type;
-                const matchDist = maxDist === 0 || p._dist <= maxDist;
-                return matchTerm && matchType && matchDist;
-            });
-
-            if (currentPosition) {
-                filtered.sort((a, b) => a._dist - b._dist);
-            } else {
-                filtered.sort((a, b) => (a.nom_lieu || "").localeCompare(b.nom_lieu || ""));
-            }
-            renderPlaces(filtered);
-        }
-
-        function renderPlaces(list = null) {
-            const data = list || places;
-            const container = document.getElementById('places-list');
-            container.innerHTML = '';
             
-            if(data.length === 0) {
-                document.getElementById('empty-state').classList.remove('hidden');
-                return;
+            if(p.latitude) {
+                document.getElementById('gps-coords-display').innerText = `${p.latitude.toFixed(4)}, ${p.longitude.toFixed(4)}`;
+                document.getElementById('gps-coords-display').className = "text-blue-600 font-mono text-sm";
             } else {
-                document.getElementById('empty-state').classList.add('hidden');
+                 document.getElementById('gps-coords-display').innerText = "Pas de GPS";
+                 document.getElementById('gps-coords-display').className = "text-gray-500";
             }
 
-            data.forEach(p => {
-                const distDisplay = formatDistance(p._dist);
-                const wazeUrl = (p.latitude && p.longitude) ? `https://waze.com/ul?ll=${p.latitude},${p.longitude}&navigate=yes` : null;
-                const mapsUrl = (p.latitude && p.longitude) 
-                    ? `https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}` 
-                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
-
-                const html = `
-                <div class="place-card">
-                    <div class="place-content">
-                        <div class="place-header">
-                            <div class="place-title">
-                                <h3>${p.nom_lieu}</h3>
-                                <div class="place-city">${p.adresse ? p.adresse + ', ' : ''} ${p.ville}</div>
-                            </div>
-                            <div class="place-meta">
-                                <span class="badge">${p.type_lieu}</span>
-                                <span class="distance-badge">${distDisplay}</span>
-                            </div>
-                        </div>
-                        <div class="codes-block">
-                            <div class="code-row">
-                                <span class="code-label">Portail / Principal</span>
-                                <span class="code-value" onclick="copyToClipboard('${p.code_entree_principal}')">
-                                    ${p.code_entree_principal} <span style="font-size:0.7rem; font-weight:normal">📋</span>
-                                </span>
-                            </div>
-                            ${p.code_secondaire ? `
-                            <div class="code-row">
-                                <span class="code-label">Intérieur / Bis</span>
-                                <span class="code-value" onclick="copyToClipboard('${p.code_secondaire}')">
-                                    ${p.code_secondaire} <span style="font-size:0.7rem; font-weight:normal">📋</span>
-                                </span>
-                            </div>` : ''}
-                        </div>
-                        ${p.commentaire ? `<div style="font-style:italic; font-size:0.9rem; color:var(--color-text-light); margin-bottom:0.5rem">📝 ${p.commentaire}</div>` : ''}
-                    </div>
-                    <div class="place-actions">
-                        <button onclick="sharePlace('${p.id}')" class="button btn-sm btn-whatsapp">📤 Partager</button>
-                        ${wazeUrl ? `<a href="${wazeUrl}" target="_blank" class="button btn-sm btn-primary">🚙 Waze</a>` : ''}
-                        <a href="${mapsUrl}" target="_blank" class="button btn-sm btn-secondary">🗺️ Maps</a>
-                        <button onclick="editPlace('${p.id}')" class="button btn-sm btn-outline">✏️</button>
-                        <button onclick="deletePlace('${p.id}')" class="button btn-sm btn-danger">🗑️</button>
-                    </div>
-                </div>`;
-                container.innerHTML += html;
-            });
+            document.getElementById('modal-title').innerText = "Modifier";
+            openModal(true);
         }
 
-        // --- PARTAGE & OUTILS ---
-        function toggleDataTools() {
-            document.getElementById('data-tools').classList.toggle('hidden');
+        // --- SUPPRESSION ---
+        function askDelete(id) {
+            deleteTargetId = id;
+            document.getElementById('modal-confirm').classList.remove('hidden');
+            document.getElementById('confirm-btn').onclick = confirmDelete;
         }
 
-        function getCleanDataForExport() {
-            return places.map(p => ({
-                id: p.id,
-                nom_lieu: p.nom_lieu || p.nom, 
-                type_lieu: p.type_lieu || p.type,
-                adresse: p.adresse || "",
-                ville: p.ville || "",
-                code_entree_principal: p.code_entree_principal || p.code1,
-                code_secondaire: p.code_secondaire || p.code2 || "",
-                commentaire: p.commentaire || p.note || "",
-                latitude: p.latitude || p.lat,
-                longitude: p.longitude || p.lon,
-                date_maj: p.date_maj || p.updated || new Date().toISOString()
-            }));
+        function closeConfirm() {
+            document.getElementById('modal-confirm').classList.add('hidden');
+            deleteTargetId = null;
         }
 
-        function sharePlace(id) {
-            const p = places.find(place => place.id === id);
-            if (!p) return;
-            const mapLink = (p.latitude && p.longitude) 
-                ? `https://www.google.com/maps/search/?api=1&query=${p.latitude},${p.longitude}` 
-                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
-            const text = `🚑 *INFO ACCÈS AMBULANCE* 🚑\n\n🏥 *${p.nom_lieu}* (${p.type_lieu})\n📍 ${p.adresse}, ${p.ville}\n🔢 *CODE:* ${p.code_entree_principal}\n` +
-                         (p.code_secondaire ? `🔢 Code 2: ${p.code_secondaire}\n` : '') +
-                         (p.commentaire ? `📝 Note: ${p.commentaire}\n` : '') +
-                         `\n🗺️ GPS: ${mapLink}`;
-            if (navigator.share) {
-                navigator.share({ title: `Code ${p.nom_lieu}`, text: text }).catch(console.error);
-            } else {
-                copyToClipboard(text);
-                showToast("Infos copiées !");
+        function confirmDelete() {
+            if (deleteTargetId) {
+                places = places.filter(p => p.id !== deleteTargetId);
+                saveData();
+                filterAndRenderPlaces();
+                showToast("Lieu supprimé", "success");
             }
+            closeConfirm();
+        }
+
+        // --- IMPORT / EXPORT (LOGIQUE CONSERVÉE) ---
+        function exportData() {
+            const dataStr = JSON.stringify(places, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `codes_ambu_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("Sauvegarde téléchargée", "success");
         }
 
         function shareGlobalData() {
-            const cleanData = getCleanDataForExport();
-            const dataStr = JSON.stringify(cleanData, null, 2);
-            const fileName = `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
-            const file = new File([dataStr], fileName, { type: 'application/json' });
+            const file = new File([JSON.stringify(places)], `codes_${new Date().toISOString().slice(0,10)}.json`, {type: 'application/json'});
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({ files: [file], title: 'Base Codes', text: 'Backup' })
+                .then(() => showToast("Partage réussi", "success"))
+                .catch(e => console.log(e));
+            } else {
+                exportData();
+            }
+        }
+        
+        function sharePlaceAsFile(id) {
+            const p = places.find(place => place.id === id);
+            if (!p) return;
+
+            const exportData = { ...p }; // Clone simple
+            const fileName = `lieu_${p.nom_lieu.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
+            const file = new File([JSON.stringify(exportData, null, 2)], fileName, {type: 'application/json'});
+
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 navigator.share({
                     files: [file],
-                    title: 'Sauvegarde Codes Ambulancier',
-                    text: 'Voici ma base de codes mise à jour.'
-                }).then(() => showToast("Fichier partagé !")).catch(() => exportData());
+                    title: `Lieu: ${p.nom_lieu}`,
+                    text: 'Importe ce fichier dans ton Carnet Ambulancier.'
+                }).then(() => showToast("Lieu partagé !", "success"))
+                  .catch(e => console.log("Annulé", e));
             } else {
-                exportData();
-                showToast("Partage fichier non supporté, téléchargement lancé.");
+                // Fallback: Download
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast("Lieu téléchargé (Partage non supporté)", "neutral");
             }
         }
 
-        function exportData() {
-            const cleanData = getCleanDataForExport();
-            const dataStr = JSON.stringify(cleanData, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", url);
-            dlAnchor.setAttribute("download", `codes_ambulancier_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            document.body.removeChild(dlAnchor);
-            URL.revokeObjectURL(url);
-        }
-
         function triggerImport(mode) {
-            importMode = mode;
+            window.importMode = mode;
             document.getElementById('import-file').click();
         }
 
         function processImportFile(input) {
             const file = input.files[0];
-            if(!file) return;
+            if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 try {
                     const json = JSON.parse(e.target.result);
-                    if(!Array.isArray(json)) throw new Error("Format invalide : doit être une liste.");
-                    const isValid = json.some(item => item.nom_lieu || item.nom || item.code_entree_principal || item.code1);
-                    if (!isValid) throw new Error("Structure JSON incompatible.");
+                    let dataToImport = [];
 
-                    const normalizedJson = json.map(p => {
-                        if (p.nom && !p.nom_lieu) {
-                            return {
-                                id: p.id,
-                                nom_lieu: p.nom,
-                                type_lieu: p.type === 'EHPAD' ? 'Maison de retraite / EHPAD' : p.type,
-                                adresse: p.adresse || "",
-                                ville: p.ville || "",
-                                code_entree_principal: p.code1 || "",
-                                code_secondaire: p.code2 || "",
-                                commentaire: p.note || "",
-                                latitude: p.lat,
-                                longitude: p.lon,
-                                date_maj: p.updated || new Date().toISOString()
-                            };
+                    if (Array.isArray(json)) {
+                        dataToImport = json;
+                    } else if (typeof json === 'object' && json !== null) {
+                        // Support import unitaire (partiel)
+                        dataToImport = [json];
+                    } else {
+                        throw new Error("Format invalide");
+                    }
+                    
+                    // Normalisation identique au loadData
+                     const normalized = dataToImport.map(p => ({
+                        id: p.id || Math.random().toString(36),
+                        nom_lieu: p.nom_lieu || p.nom || "Inconnu",
+                        type_lieu: (p.type_lieu || p.type) === 'Maison de retraite / EHPAD' ? 'EHPAD' : (p.type_lieu || p.type || "Autre"),
+                        adresse: p.adresse || "",
+                        ville: p.ville || "",
+                        code_entree_principal: p.code_entree_principal || p.code1 || "",
+                        code_secondaire: p.code_secondaire || p.code2 || "",
+                        commentaire: p.commentaire || p.note || "",
+                        latitude: parseFloat(p.latitude || p.lat),
+                        longitude: parseFloat(p.longitude || p.lon),
+                        date_maj: p.date_maj || p.updated || new Date().toISOString()
+                    }));
+
+                    // --- SECURITE ANTI ECRASEMENT PARTIEL ---
+                    if (window.importMode === 'replace') {
+                        // Si le fichier importé est petit (< 5 lieux) mais que la base est grosse (> 5 lieux)
+                        // C'est probablement une erreur (partage de fichier unique).
+                        if (normalized.length < 5 && places.length > 5) {
+                            if (!confirm(`⚠️ ALERTE SÉCURITÉ ⚠️\n\nVous êtes sur le point d'EFFACER ${places.length} lieux pour n'en garder que ${normalized.length}.\n\nCeci ressemble à une erreur (Import d'un lieu partagé).\n\nVoulez-vous continuer et TOUT EFFACER ?\n(Annulez pour Fusionner plutôt)`)) {
+                                input.value = '';
+                                return; // Stop
+                            }
                         }
-                        return p;
-                    });
 
-                    if (importMode === 'replace') {
-                        if(confirm(`⚠️ Remplacer ${places.length} lieux par ${normalizedJson.length} ?`)) {
-                            places = normalizedJson;
-                            saveDB();
-                            showToast(`Base remplacée : ${places.length} lieux.`);
-                            filterAndRenderPlaces();
+                        if(confirm(`⚠️ ATTENTION : Remplacement total de la base.\n\n${places.length} lieux actuels seront remplacés par ${normalized.length} lieux importés.\n\nContinuer ?`)) {
+                            places = normalized;
+                            showToast(`Base remplacée (${places.length} lieux)`, "success");
                         }
                     } else {
-                        let addedCount = 0;
-                        const existingIds = new Set(places.map(p => p.id));
-                        normalizedJson.forEach(newItem => {
-                            if (!existingIds.has(newItem.id)) {
-                                places.push(newItem);
-                                addedCount++;
+                        // Mode MERGE INTELLIGENT AVEC DETECTION DE CONFLIT
+                        const currentMap = new Map(places.map(p => [p.id, p]));
+                        const toAdd = [];
+                        let updated = 0;
+                        let skipped = 0;
+                        
+                        for (const p of normalized) {
+                            if (!currentMap.has(p.id)) {
+                                // Nouveau lieu
+                                toAdd.push(p);
+                            } else {
+                                // Lieu existant : Vérification des conflits (codes différents)
+                                const existing = currentMap.get(p.id);
+                                const isCodeDifferent = (existing.code_entree_principal !== p.code_entree_principal) || 
+                                                        (existing.code_secondaire !== p.code_secondaire);
+                                
+                                if (isCodeDifferent) {
+                                    // Demande à l'utilisateur si conflit de codes
+                                    const msg = `⚠️ CONFLIT détecté pour "${p.nom_lieu}"\n\n` +
+                                                `VOTRE VERSION :\nCodes: ${existing.code_entree_principal} ${existing.code_secondaire ? '/ ' + existing.code_secondaire : ''}\n\n` +
+                                                `NOUVELLE VERSION (Import):\nCodes: ${p.code_entree_principal} ${p.code_secondaire ? '/ ' + p.code_secondaire : ''}\n\n` +
+                                                `Voulez-vous REMPLACER votre version par celle du fichier ?`;
+                                    
+                                    if (confirm(msg)) {
+                                        const idx = places.findIndex(x => x.id === p.id);
+                                        places[idx] = p;
+                                        updated++;
+                                    } else {
+                                        skipped++;
+                                    }
+                                } else {
+                                    // Codes identiques : on ignore silencieusement
+                                    skipped++;
+                                }
                             }
-                        });
-                        saveDB();
-                        showToast(`Fusion : +${addedCount} lieux.`);
+                        }
+
+                        places = places.concat(toAdd);
+                        const added = toAdd.length;
+
+                        saveData();
                         filterAndRenderPlaces();
+                        showToast(`Terminé : +${added} ajoutés, ${updated} mis à jour.`, "success");
                     }
-                } catch(ex) { alert("Erreur de lecture : " + ex.message); }
-                input.value = ''; 
+                } catch (err) {
+                    console.error(err);
+                    showToast("Erreur fichier invalide", "error");
+                }
+                input.value = '';
             };
             reader.readAsText(file);
         }
 
-        function copyToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try { document.execCommand('copy'); showToast("Copié !"); } catch (err) { showToast("Erreur copie"); }
-            document.body.removeChild(textArea);
+        function sharePlace(id) {
+            const p = places.find(place => place.id === id);
+            if (!p) return;
+            
+            const mapLink = (p.latitude && p.longitude) 
+                ? `https://maps.google.com/?q=${p.latitude},${p.longitude}` 
+                : `https://maps.google.com/?q=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
+
+            const text = `🚑 *${p.nom_lieu}* (${p.type_lieu})\n📍 ${p.adresse}, ${p.ville}\n🔢 CODE: ${p.code_entree_principal}\n${p.code_secondaire ? `🔢 Bis: ${p.code_secondaire}\n` : ''}🔗 GPS: ${mapLink}`;
+            
+            if (navigator.share) {
+                navigator.share({ title: p.nom_lieu, text: text }).catch(console.error);
+            } else {
+                copyCode(text);
+            }
         }
 
-        function showToast(msg) {
-            const x = document.getElementById("toast");
-            x.className = "show";
-            x.innerText = msg;
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        // --- UTILS ---
+        function showToast(msg, type = 'neutral') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const message = document.getElementById('toast-message');
+            
+            toast.classList.remove('hidden', 'flex');
+            toast.classList.add('flex', 'toast-anim');
+            
+            if (type === 'success') {
+                icon.innerHTML = '<i class="fa-solid fa-check-circle text-green-400 text-xl"></i>';
+            } else if (type === 'error') {
+                icon.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-400 text-xl"></i>';
+            } else {
+                icon.innerHTML = '<i class="fa-solid fa-info-circle text-blue-400 text-xl"></i>';
+            }
+            
+            message.innerText = msg;
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex', 'toast-anim');
+            }, 3000);
         }
 
-        function openModal() {
-            document.getElementById('place-form').reset();
-            document.getElementById('place-id').value = '';
-            document.getElementById('modal-title').innerText = "Nouveau Lieu";
-            document.getElementById('place-modal').style.display = 'block';
-            fillGPS();
-        }
-        function closeModal() {
-            document.getElementById('place-modal').style.display = 'none';
-        }
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('place-modal')) closeModal();
-        }
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadData();
+            filterAndRenderPlaces();
+            updateLocation();
+        });
     </script>
 </body>
 </html>
