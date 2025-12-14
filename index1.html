@@ -679,6 +679,28 @@
             }
         }
 
+        // --- AJOUT FONCTION WHATSAPP ---
+        function sharePlace(id) {
+            const p = places.find(place => place.id === id);
+            if (!p) return;
+
+            let text = `🚑 *${p.nom_lieu}*\n📍 ${p.adresse} ${p.ville}`;
+            
+            if(p.code_entree_principal) text += `\n🔢 Portail: ${p.code_entree_principal}`;
+            if(p.code_secondaire) text += `\n🔢 Bis: ${p.code_secondaire}`;
+            if(p.commentaire) text += `\n📝 ${p.commentaire}`;
+
+            // Ajout Lien GPS
+            if(p.latitude && p.longitude) {
+                 text += `\n🔗 https://www.google.com/maps/search/?api=1&query=${p.latitude},${p.longitude}`;
+            } else {
+                 text += `\n🔗 https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
+            }
+
+            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
         function toggleTools() {
             document.getElementById('tools-panel').classList.toggle('hidden');
         }
