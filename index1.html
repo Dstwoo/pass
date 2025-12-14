@@ -117,20 +117,46 @@
 
             <!-- Filtres Rapides -->
             <div class="grid grid-cols-2 gap-2 mt-3">
-                <select id="type-filter" onchange="filterAndRenderPlaces()" class="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm outline-none">
+                <select id="type-filter" onchange="handleSearchTypeChange(this)" class="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm outline-none">
                     <option value="">🏥 Tous types</option>
                     <option value="Hôpital">Hôpital</option>
                     <option value="Clinique">Clinique</option>
                     <option value="Résidence">Résidence</option>
-                    <option value="EHPAD">Maison de retraite</option>
+                    <option value="EHPAD">EHPAD</option>
                     <option value="Parking">Parking</option>
                     <option value="Autre">Autre</option>
+                    <option disabled>──────────</option>
+                    <option value="Professionnel de Santé" class="text-red-600 font-bold dark:text-red-400">🩺 Pro. Santé</option>
+                    <option value="Patient" class="text-red-600 font-bold dark:text-red-400">🔒 Patient (Privé)</option>
                 </select>
                 <select id="dist-filter" onchange="filterAndRenderPlaces()" class="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm outline-none">
                     <option value="0">🌍 Toute distance</option>
                     <option value="0.2">📍 &lt; 200 m</option>
                     <option value="5">📍 &lt; 5 km</option>
                     <option value="20">📍 &lt; 20 km</option>
+                </select>
+            </div>
+
+            <!-- Sous-filtre Spécialité (Apparaît si Pro Santé sélectionné) -->
+            <div id="search-subtype-container" class="hidden mt-2">
+                <select id="subtype-filter" onchange="filterAndRenderPlaces()" class="w-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-2 text-sm outline-none text-blue-900 dark:text-blue-100">
+                    <option value="">-- Toutes spécialités --</option>
+                    <option value="Cardiologue">Cardiologue</option>
+                    <option value="Chirurgien-dentiste">Chirurgien-dentiste</option>
+                    <option value="Dermatologue">Dermatologue</option>
+                    <option value="Gastro-entérologue">Gastro-entérologue</option>
+                    <option value="Gynécologue médical">Gynécologue médical</option>
+                    <option value="Infirmier(ère) libéral(e)">Infirmier(ère) libéral(e)</option>
+                    <option value="Kinésithérapeute">Kinésithérapeute</option>
+                    <option value="Médecin généraliste">Médecin généraliste</option>
+                    <option value="Neurologue">Neurologue</option>
+                    <option value="Ophtalmologue">Ophtalmologue</option>
+                    <option value="Orthophoniste">Orthophoniste</option>
+                    <option value="Orthoptiste">Orthoptiste</option>
+                    <option value="ORL">Oto-rhino-laryngologiste (ORL)</option>
+                    <option value="Pédicure-podologue">Pédicure-podologue</option>
+                    <option value="Pneumologue">Pneumologue</option>
+                    <option value="Autre spécialiste">Autre spécialiste</option>
                 </select>
             </div>
         </div>
@@ -142,18 +168,41 @@
 
         <!-- Panel Outils (Caché par défaut) -->
         <div id="tools-panel" class="hidden bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4 border border-gray-200 dark:border-gray-700">
-            <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-3">Gestion de base de données</h3>
             
+            <!-- Toggle Patients -->
+            <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-700/50 rounded-lg mb-4 border border-gray-200 dark:border-gray-600">
+                <span class="text-sm font-bold flex items-center gap-2 text-gray-700 dark:text-gray-200">
+                    <i class="fa-solid fa-user-shield text-blue-500"></i> Afficher les Patients
+                </span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="patient-toggle" class="sr-only peer" onchange="togglePatientVisibility()">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+            </div>
+
+            <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-3 text-xs uppercase tracking-wider">Téléchargement & Sauvegarde</h3>
+            
+            <!-- Nouvelle Grille de Téléchargement -->
             <div class="grid grid-cols-2 gap-3 mb-4">
-                <!-- Bouton Partager Tout -->
-                <button onclick="shareGlobalData()" class="flex flex-col items-center justify-center gap-1 bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition-colors shadow-sm">
-                    <i class="fa-solid fa-share-nodes text-lg"></i> 
-                    <span class="text-sm font-bold">Partager Tout</span>
+                <!-- Lieux / Codes -->
+                <button onclick="exportData('standard')" class="flex flex-col items-center justify-center gap-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl hover:bg-gray-50 transition-colors shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                    <i class="fa-solid fa-building text-lg text-blue-500"></i>
+                    <span class="text-xs font-bold">Lieux / Codes</span>
                 </button>
-                <!-- Bouton Sauvegarder (Fichier) -->
-                <button onclick="exportData()" class="flex flex-col items-center justify-center gap-1 bg-gray-600 text-white py-3 rounded-xl hover:bg-gray-700 transition-colors shadow-sm">
-                    <i class="fa-solid fa-download text-lg"></i>
-                    <span class="text-sm font-bold">Télécharger</span>
+                <!-- Pro Santé -->
+                <button onclick="exportData('pro')" class="flex flex-col items-center justify-center gap-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl hover:bg-gray-50 transition-colors shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                    <i class="fa-solid fa-user-doctor text-lg text-cyan-500"></i>
+                    <span class="text-xs font-bold">Pro. Santé</span>
+                </button>
+                <!-- Patients -->
+                <button onclick="exportData('patient')" class="flex flex-col items-center justify-center gap-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl hover:bg-gray-50 transition-colors shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                    <i class="fa-solid fa-user-injured text-lg text-green-500"></i>
+                    <span class="text-xs font-bold">Patients</span>
+                </button>
+                <!-- TOUT -->
+                <button onclick="exportData('all')" class="flex flex-col items-center justify-center gap-1 bg-gray-800 text-white py-3 rounded-xl hover:bg-gray-900 transition-colors shadow-sm dark:bg-gray-600 dark:hover:bg-gray-500">
+                    <i class="fa-solid fa-floppy-disk text-lg"></i>
+                    <span class="text-xs font-bold">TOUT</span>
                 </button>
             </div>
 
@@ -186,7 +235,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
             <p class="text-gray-500 dark:text-gray-400">Aucun lieu trouvé.</p>
-            <p class="text-xs text-gray-400 mt-2">Commencez par ajouter un lieu ou importer une sauvegarde.</p>
+            <p class="text-xs text-gray-400 mt-2">Essayez de changer les filtres ou utilisez la recherche.</p>
         </div>
     </main>
 
@@ -212,25 +261,52 @@
                 
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nom du lieu</label>
-                    <input type="text" id="nom_lieu" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="Ex: Résidence Les Lilas">
+                    <input type="text" id="nom_lieu" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="Ex: Cabinet Dr Dupont">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Type</label>
-                        <select id="type_lieu" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none">
+                        <select id="type_lieu" onchange="toggleProSante(this)" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none">
                             <option value="Résidence">Résidence</option>
                             <option value="Hôpital">Hôpital</option>
                             <option value="Clinique">Clinique</option>
                             <option value="EHPAD">EHPAD</option>
                             <option value="Parking">Parking</option>
                             <option value="Autre">Autre</option>
+                            <option disabled>──────────</option>
+                            <option value="Professionnel de Santé" class="text-red-600 font-bold dark:text-red-400">🩺 Pro. Santé</option>
+                            <option value="Patient" class="text-red-600 font-bold dark:text-red-400">🔒 Patient (Privé)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Ville</label>
                         <input type="text" id="ville" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="Paris">
                     </div>
+                </div>
+
+                <!-- Sous-menu Professionnel de Santé (Caché par défaut) -->
+                <div id="sous-type-container" class="hidden">
+                    <label class="block text-xs font-bold text-blue-600 dark:text-blue-400 uppercase mb-1">Spécialité</label>
+                    <select id="sous_type_lieu" class="w-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 outline-none text-blue-900 dark:text-blue-100">
+                        <option value="">-- Choisir la spécialité --</option>
+                        <option value="Cardiologue">Cardiologue</option>
+                        <option value="Chirurgien-dentiste">Chirurgien-dentiste</option>
+                        <option value="Dermatologue">Dermatologue</option>
+                        <option value="Gastro-entérologue">Gastro-entérologue</option>
+                        <option value="Gynécologue médical">Gynécologue médical</option>
+                        <option value="Infirmier(ère) libéral(e)">Infirmier(ère) libéral(e)</option>
+                        <option value="Kinésithérapeute">Kinésithérapeute</option>
+                        <option value="Médecin généraliste">Médecin généraliste</option>
+                        <option value="Neurologue">Neurologue</option>
+                        <option value="Ophtalmologue">Ophtalmologue</option>
+                        <option value="Orthophoniste">Orthophoniste</option>
+                        <option value="Orthoptiste">Orthoptiste</option>
+                        <option value="ORL">Oto-rhino-laryngologiste (ORL)</option>
+                        <option value="Pédicure-podologue">Pédicure-podologue</option>
+                        <option value="Pneumologue">Pneumologue</option>
+                        <option value="Autre spécialiste">Autre spécialiste</option>
+                    </select>
                 </div>
 
                 <div>
@@ -298,6 +374,7 @@
         let places = [];
         let currentPosition = null;
         let deleteTargetId = null;
+        let showPatients = false;
 
         // --- THEME & INIT ---
         function initTheme() {
@@ -315,6 +392,35 @@
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         }
 
+        function togglePatientVisibility() {
+            showPatients = document.getElementById('patient-toggle').checked;
+            filterAndRenderPlaces();
+            showToast(showPatients ? "Patients affichés" : "Patients masqués");
+        }
+
+        // --- GESTION PRO SANTE (FORMULAIRE) ---
+        function toggleProSante(select) {
+            const container = document.getElementById('sous-type-container');
+            if (select && select.value === 'Professionnel de Santé') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('sous_type_lieu').value = ""; // Reset
+            }
+        }
+
+        // --- GESTION PRO SANTE (RECHERCHE) ---
+        function handleSearchTypeChange(select) {
+            const subContainer = document.getElementById('search-subtype-container');
+            if (select.value === 'Professionnel de Santé') {
+                subContainer.classList.remove('hidden');
+            } else {
+                subContainer.classList.add('hidden');
+                document.getElementById('subtype-filter').value = ""; // Reset
+            }
+            filterAndRenderPlaces();
+        }
+
         // --- PERSISTANCE ---
         function loadData() {
             try {
@@ -324,10 +430,10 @@
                     if (parsed && parsed.length > 0) {
                         places = parsed.map(normalizePlace);
                     } else {
-                        places = []; // Base vide par défaut
+                        places = [];
                     }
                 } else {
-                    places = []; // Base vide par défaut
+                    places = [];
                 }
             } catch (e) {
                 console.error("Erreur chargement", e);
@@ -341,6 +447,7 @@
                 id: p.id,
                 nom_lieu: p.nom_lieu || p.nom || "Inconnu",
                 type_lieu: (p.type_lieu || p.type) === 'Maison de retraite / EHPAD' ? 'EHPAD' : (p.type_lieu || p.type || "Autre"),
+                sous_type_lieu: p.sous_type_lieu || "",
                 adresse: p.adresse || "",
                 ville: p.ville || "",
                 code_entree_principal: p.code_entree_principal || p.code1 || "",
@@ -416,6 +523,8 @@
                 case 'Résidence': return 'fa-building text-blue-500';
                 case 'EHPAD': return 'fa-wheelchair text-orange-500';
                 case 'Parking': return 'fa-square-parking text-gray-500';
+                case 'Patient': return 'fa-user-injured text-green-500';
+                case 'Professionnel de Santé': return 'fa-user-doctor text-cyan-500';
                 default: return 'fa-map-pin text-gray-400';
             }
         }
@@ -423,6 +532,7 @@
         function filterAndRenderPlaces() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const typeFilter = document.getElementById('type-filter').value;
+            const subtypeFilter = document.getElementById('subtype-filter').value;
             const distFilter = parseFloat(document.getElementById('dist-filter').value);
 
             let filtered = places.map(p => {
@@ -434,9 +544,27 @@
             });
 
             filtered = filtered.filter(p => {
+                // FILTRE PATIENTS (SECURITE)
+                if (!showPatients && p.type_lieu === 'Patient' && typeFilter !== 'Patient') {
+                    return false;
+                }
+
+                // FILTRE PRO SANTE (Masqués par défaut dans "Tous types" sauf si recherche textuelle)
+                if (typeFilter === '' && term === '' && p.type_lieu === 'Professionnel de Santé') {
+                    return false;
+                }
+
                 const matchTerm = (p.nom_lieu || "").toLowerCase().includes(term) || 
-                                  (p.ville || "").toLowerCase().includes(term);
-                const matchType = !typeFilter || p.type_lieu === typeFilter;
+                                  (p.ville || "").toLowerCase().includes(term) ||
+                                  (p.sous_type_lieu || "").toLowerCase().includes(term); 
+                                  
+                let matchType = !typeFilter || p.type_lieu === typeFilter;
+                
+                // Sous-filtre Pro Santé
+                if (typeFilter === 'Professionnel de Santé' && subtypeFilter) {
+                    matchType = matchType && (p.sous_type_lieu === subtypeFilter);
+                }
+
                 const matchDist = distFilter === 0 || p._dist <= distFilter;
                 return matchTerm && matchType && matchDist;
             });
@@ -462,6 +590,12 @@
                 const iconClass = getIconForType(p.type_lieu);
                 const distBadge = formatDist(p._dist);
                 
+                // Affichage spécial pour Pro Santé
+                let typeDisplay = p.type_lieu;
+                if (p.type_lieu === 'Professionnel de Santé' && p.sous_type_lieu) {
+                    typeDisplay = `${p.sous_type_lieu}`;
+                }
+                
                 const wazeUrl = (p.latitude && p.longitude) ? `https://waze.com/ul?ll=${p.latitude},${p.longitude}&navigate=yes` : null;
                 const mapsUrl = (p.latitude && p.longitude) 
                     ? `https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}` 
@@ -478,7 +612,7 @@
                                 <h3 class="font-bold text-lg leading-tight">${p.nom_lieu}</h3>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">${p.adresse} ${p.ville}</p>
                                 <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] uppercase font-bold tracking-wider bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-500">${p.type_lieu}</span>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-500 truncate max-w-[150px]">${typeDisplay}</span>
                                     ${distBadge}
                                 </div>
                             </div>
@@ -517,9 +651,6 @@
                     <div class="flex items-center gap-2 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                         ${wazeUrl ? `<a href="${wazeUrl}" target="_blank" class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-300 py-2 rounded-lg text-center text-sm font-bold transition-colors"><i class="fa-brands fa-waze mr-1"></i> Waze</a>` : ''}
                         <a href="${mapsUrl}" target="_blank" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 py-2 rounded-lg text-center text-sm font-bold transition-colors"><i class="fa-solid fa-map-location-dot mr-1"></i> Maps</a>
-                        <button onclick="sharePlaceAsFile('${p.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 transition-colors" title="Transférer ce lieu (Fichier)">
-                            <i class="fa-solid fa-share-nodes text-lg"></i>
-                        </button>
                         <button onclick="sharePlace('${p.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40 transition-colors">
                             <i class="fa-brands fa-whatsapp text-lg"></i>
                         </button>
@@ -538,7 +669,6 @@
                 await navigator.clipboard.writeText(text);
                 showToast(`Code ${text} copié !`, 'success');
             } catch (err) {
-                // Fallback ancien navigateur
                 const textArea = document.createElement("textarea");
                 textArea.value = text;
                 document.body.appendChild(textArea);
@@ -569,7 +699,7 @@
                 document.getElementById('place-id').value = '';
                 document.getElementById('modal-title').innerText = "Ajouter un lieu";
                 document.getElementById('gps-coords-display').innerText = "Pas de GPS enregistré";
-                // Auto fill GPS if available
+                document.getElementById('sous-type-container').classList.add('hidden'); // Reset sous-type
                 if(currentPosition) fillGPSForm();
             }
         }
@@ -600,6 +730,7 @@
                 id: id || Date.now().toString(36) + Math.random().toString(36).substr(2),
                 nom_lieu: document.getElementById('nom_lieu').value,
                 type_lieu: document.getElementById('type_lieu').value,
+                sous_type_lieu: document.getElementById('sous_type_lieu').value, // Nouveau champ
                 adresse: document.getElementById('adresse').value,
                 ville: document.getElementById('ville').value,
                 code_entree_principal: document.getElementById('code_entree_principal').value,
@@ -630,6 +761,12 @@
             document.getElementById('place-id').value = p.id;
             document.getElementById('nom_lieu').value = p.nom_lieu;
             document.getElementById('type_lieu').value = p.type_lieu;
+            
+            // Gestion affichage sous-menu
+            const sousTypeSelect = document.getElementById('sous_type_lieu');
+            sousTypeSelect.value = p.sous_type_lieu || "";
+            toggleProSante(document.getElementById('type_lieu'));
+
             document.getElementById('adresse').value = p.adresse;
             document.getElementById('ville').value = p.ville;
             document.getElementById('code_entree_principal').value = p.code_entree_principal;
@@ -672,81 +809,40 @@
             closeConfirm();
         }
 
-        // --- IMPORT / EXPORT (LOGIQUE CONSERVÉE) ---
-        function exportData() {
-            const dataStr = JSON.stringify(places, null, 2);
+        // --- IMPORT / EXPORT (NOUVEAU SYSTÈME) ---
+        function exportData(filterType = 'all') {
+            let dataToExport = [];
+            let filenamePrefix = "sauvegarde_globale";
+
+            if (filterType === 'all') {
+                dataToExport = places;
+                filenamePrefix = "backup_complet";
+            } else if (filterType === 'standard') {
+                dataToExport = places.filter(p => p.type_lieu !== 'Patient' && p.type_lieu !== 'Professionnel de Santé');
+                filenamePrefix = "lieux_codes";
+            } else if (filterType === 'pro') {
+                dataToExport = places.filter(p => p.type_lieu === 'Professionnel de Santé');
+                filenamePrefix = "pro_sante";
+            } else if (filterType === 'patient') {
+                dataToExport = places.filter(p => p.type_lieu === 'Patient');
+                filenamePrefix = "patients";
+            }
+
+            if (dataToExport.length === 0) {
+                showToast("Aucune donnée à exporter", "error");
+                return;
+            }
+
+            const dataStr = JSON.stringify(dataToExport, null, 2);
             const blob = new Blob([dataStr], { type: "application/json" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `codes_ambu_${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `${filenamePrefix}_${new Date().toISOString().slice(0,10)}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast("Sauvegarde téléchargée", "success");
-        }
-
-        async function shareGlobalData() {
-            const dataToShare = JSON.stringify(places, null, 2);
-            const fileName = `backup_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
-            const file = new File([dataToShare], fileName, { type: "application/json" });
-
-            try {
-                if (navigator.share) {
-                    await navigator.share({
-                        files: [file],
-                        title: 'Sauvegarde Complète',
-                        text: 'Sauvegarde Carnet Ambulancier'
-                    });
-                    showToast("Partage réussi !", "success");
-                } else {
-                    throw new Error("API Partage indisponible");
-                }
-            } catch (error) {
-                console.error("Erreur partage:", error);
-                // Si l'utilisateur annule, on ne fait rien de spécial
-                if (error.name === 'AbortError') return;
-                
-                // Sinon on fallback sur le téléchargement classique
-                exportData();
-                // On prévient l'utilisateur seulement si ce n'est pas un support manquant évident (pour éviter double action)
-                if (error.message !== "API Partage indisponible") {
-                     showToast("Partage impossible -> Téléchargement", "neutral");
-                }
-            }
-        }
-        
-        async function sharePlaceAsFile(id) {
-            const p = places.find(place => place.id === id);
-            if (!p) return;
-
-            const exportData = { ...p }; // Clone simple
-            const fileName = `lieu_${p.nom_lieu.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
-            const file = new File([JSON.stringify(exportData, null, 2)], fileName, {type: 'application/json'});
-
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        files: [file],
-                        title: `Lieu: ${p.nom_lieu}`,
-                        text: 'Importe ce fichier dans ton Carnet Ambulancier.'
-                    });
-                    showToast("Lieu partagé !", "success");
-                } catch (e) {
-                    console.log("Partage annulé", e);
-                }
-            } else {
-                // Fallback: Download
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                showToast("Lieu téléchargé (Partage non supporté)", "neutral");
-            }
+            showToast(`Fichier téléchargé`, "success");
         }
 
         function triggerImport(mode) {
@@ -766,17 +862,16 @@
                     if (Array.isArray(json)) {
                         dataToImport = json;
                     } else if (typeof json === 'object' && json !== null) {
-                        // Support import unitaire (partiel)
                         dataToImport = [json];
                     } else {
                         throw new Error("Format invalide");
                     }
                     
-                    // Normalisation identique au loadData
                      const normalized = dataToImport.map(p => ({
                         id: p.id || Math.random().toString(36),
                         nom_lieu: p.nom_lieu || p.nom || "Inconnu",
                         type_lieu: (p.type_lieu || p.type) === 'Maison de retraite / EHPAD' ? 'EHPAD' : (p.type_lieu || p.type || "Autre"),
+                        sous_type_lieu: p.sous_type_lieu || "",
                         adresse: p.adresse || "",
                         ville: p.ville || "",
                         code_entree_principal: p.code_entree_principal || p.code1 || "",
@@ -787,90 +882,52 @@
                         date_maj: p.date_maj || p.updated || new Date().toISOString()
                     }));
 
-                    // --- SECURITE ANTI ECRASEMENT PARTIEL ---
                     if (window.importMode === 'replace') {
-                        // Si le fichier importé est petit (< 5 lieux) mais que la base est grosse (> 5 lieux)
-                        // C'est probablement une erreur (partage de fichier unique).
                         if (normalized.length < 5 && places.length > 5) {
-                            if (!confirm(`⚠️ ALERTE SÉCURITÉ ⚠️\n\nVous êtes sur le point d'EFFACER ${places.length} lieux pour n'en garder que ${normalized.length}.\n\nCeci ressemble à une erreur (Import d'un lieu partagé).\n\nVoulez-vous continuer et TOUT EFFACER ?\n(Annulez pour Fusionner plutôt)`)) {
+                            if (!confirm(`⚠️ ALERTE SÉCURITÉ\nEffacer ${places.length} lieux pour ${normalized.length} ?`)) {
                                 input.value = '';
-                                return; // Stop
+                                return;
                             }
                         }
-
-                        if(confirm(`⚠️ ATTENTION : Remplacement total de la base.\n\n${places.length} lieux actuels seront remplacés par ${normalized.length} lieux importés.\n\nContinuer ?`)) {
+                        if(confirm(`Remplacer ${places.length} lieux par ${normalized.length} lieux ?`)) {
                             places = normalized;
-                            showToast(`Base remplacée (${places.length} lieux)`, "success");
+                            showToast(`Base remplacée`, "success");
                         }
                     } else {
-                        // Mode MERGE INTELLIGENT AVEC DETECTION DE CONFLIT
                         const currentMap = new Map(places.map(p => [p.id, p]));
                         const toAdd = [];
                         let updated = 0;
-                        let skipped = 0;
                         
                         for (const p of normalized) {
                             if (!currentMap.has(p.id)) {
-                                // Nouveau lieu
                                 toAdd.push(p);
                             } else {
-                                // Lieu existant : Vérification des conflits (codes différents)
                                 const existing = currentMap.get(p.id);
                                 const isCodeDifferent = (existing.code_entree_principal !== p.code_entree_principal) || 
                                                         (existing.code_secondaire !== p.code_secondaire);
                                 
                                 if (isCodeDifferent) {
-                                    // Demande à l'utilisateur si conflit de codes
-                                    const msg = `⚠️ CONFLIT détecté pour "${p.nom_lieu}"\n\n` +
-                                                `VOTRE VERSION :\nCodes: ${existing.code_entree_principal} ${existing.code_secondaire ? '/ ' + existing.code_secondaire : ''}\n\n` +
-                                                `NOUVELLE VERSION (Import):\nCodes: ${p.code_entree_principal} ${p.code_secondaire ? '/ ' + p.code_secondaire : ''}\n\n` +
-                                                `Voulez-vous REMPLACER votre version par celle du fichier ?`;
-                                    
+                                    const msg = `Conflit : ${p.nom_lieu}\nRemplacer vos codes par ceux du fichier ?`;
                                     if (confirm(msg)) {
                                         const idx = places.findIndex(x => x.id === p.id);
                                         places[idx] = p;
                                         updated++;
-                                    } else {
-                                        skipped++;
                                     }
-                                } else {
-                                    // Codes identiques : on ignore silencieusement
-                                    skipped++;
                                 }
                             }
                         }
-
                         places = places.concat(toAdd);
-                        const added = toAdd.length;
-
                         saveData();
                         filterAndRenderPlaces();
-                        showToast(`Terminé : +${added} ajoutés, ${updated} mis à jour.`, "success");
+                        showToast(`Terminé : +${toAdd.length} ajouts`, "success");
                     }
                 } catch (err) {
                     console.error(err);
-                    showToast("Erreur fichier invalide", "error");
+                    showToast("Erreur fichier", "error");
                 }
                 input.value = '';
             };
             reader.readAsText(file);
-        }
-
-        function sharePlace(id) {
-            const p = places.find(place => place.id === id);
-            if (!p) return;
-            
-            const mapLink = (p.latitude && p.longitude) 
-                ? `https://maps.google.com/?q=${p.latitude},${p.longitude}` 
-                : `https://maps.google.com/?q=${encodeURIComponent(p.adresse + ' ' + p.ville)}`;
-
-            const text = `🚑 *${p.nom_lieu}* (${p.type_lieu})\n📍 ${p.adresse}, ${p.ville}\n🔢 CODE: ${p.code_entree_principal}\n${p.code_secondaire ? `🔢 Bis: ${p.code_secondaire}\n` : ''}🔗 GPS: ${mapLink}`;
-            
-            if (navigator.share) {
-                navigator.share({ title: p.nom_lieu, text: text }).catch(console.error);
-            } else {
-                copyCode(text);
-            }
         }
 
         // --- UTILS ---
@@ -898,7 +955,6 @@
             }, 3000);
         }
 
-        // Init
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             loadData();
