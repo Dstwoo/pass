@@ -145,11 +145,15 @@
             <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-3">Gestion de base de données</h3>
             
             <div class="grid grid-cols-2 gap-3 mb-4">
-                <button onclick="shareGlobalData()" class="flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fa-brands fa-whatsapp"></i> Partager Tout
+                <!-- Bouton Partager Tout -->
+                <button onclick="shareGlobalData()" class="flex flex-col items-center justify-center gap-1 bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition-colors shadow-sm">
+                    <i class="fa-solid fa-share-nodes text-lg"></i> 
+                    <span class="text-sm font-bold">Partager Tout</span>
                 </button>
-                <button onclick="exportData()" class="flex items-center justify-center gap-2 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                    <i class="fa-solid fa-download"></i> Sauvegarder
+                <!-- Bouton Sauvegarder (Fichier) -->
+                <button onclick="exportData()" class="flex flex-col items-center justify-center gap-1 bg-gray-600 text-white py-3 rounded-xl hover:bg-gray-700 transition-colors shadow-sm">
+                    <i class="fa-solid fa-download text-lg"></i>
+                    <span class="text-sm font-bold">Télécharger</span>
                 </button>
             </div>
 
@@ -682,18 +686,37 @@
             showToast("Sauvegarde téléchargée", "success");
         }
 
-        function shareGlobalData() {
-            const file = new File([JSON.stringify(places)], `codes_${new Date().toISOString().slice(0,10)}.json`, {type: 'application/json'});
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({ files: [file], title: 'Base Codes', text: 'Backup' })
-                .then(() => showToast("Partage réussi", "success"))
-                .catch(e => console.log(e));
-            } else {
+        async function shareGlobalData() {
+            const dataToShare = JSON.stringify(places, null, 2);
+            const fileName = `backup_ambulancier_${new Date().toISOString().slice(0,10)}.json`;
+            const file = new File([dataToShare], fileName, { type: "application/json" });
+
+            try {
+                if (navigator.share) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Sauvegarde Complète',
+                        text: 'Sauvegarde Carnet Ambulancier'
+                    });
+                    showToast("Partage réussi !", "success");
+                } else {
+                    throw new Error("API Partage indisponible");
+                }
+            } catch (error) {
+                console.error("Erreur partage:", error);
+                // Si l'utilisateur annule, on ne fait rien de spécial
+                if (error.name === 'AbortError') return;
+                
+                // Sinon on fallback sur le téléchargement classique
                 exportData();
+                // On prévient l'utilisateur seulement si ce n'est pas un support manquant évident (pour éviter double action)
+                if (error.message !== "API Partage indisponible") {
+                     showToast("Partage impossible -> Téléchargement", "neutral");
+                }
             }
         }
         
-        function sharePlaceAsFile(id) {
+        async function sharePlaceAsFile(id) {
             const p = places.find(place => place.id === id);
             if (!p) return;
 
@@ -702,12 +725,16 @@
             const file = new File([JSON.stringify(exportData, null, 2)], fileName, {type: 'application/json'});
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({
-                    files: [file],
-                    title: `Lieu: ${p.nom_lieu}`,
-                    text: 'Importe ce fichier dans ton Carnet Ambulancier.'
-                }).then(() => showToast("Lieu partagé !", "success"))
-                  .catch(e => console.log("Annulé", e));
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: `Lieu: ${p.nom_lieu}`,
+                        text: 'Importe ce fichier dans ton Carnet Ambulancier.'
+                    });
+                    showToast("Lieu partagé !", "success");
+                } catch (e) {
+                    console.log("Partage annulé", e);
+                }
             } else {
                 // Fallback: Download
                 const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
