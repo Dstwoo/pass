@@ -327,16 +327,19 @@
                     <textarea id="commentaire" rows="2" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none focus:border-primary" placeholder="Bâtiment B, 3ème étage..."></textarea>
                 </div>
 
-                <!-- GPS caché mais rempli -->
-                <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                    <div class="text-sm">
-                        <span id="gps-coords-display" class="text-gray-500">Pas de GPS enregistré</span>
-                        <input type="hidden" id="latitude">
-                        <input type="hidden" id="longitude">
+                <!-- GPS Editable -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Coordonnées GPS</label>
+                        <button type="button" onclick="fillGPSForm()" class="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-location-crosshairs"></i> Ma position
+                        </button>
                     </div>
-                    <button type="button" onclick="fillGPSForm()" class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-                        <i class="fa-solid fa-location-dot mr-1"></i> Ma position
-                    </button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" step="any" id="latitude" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm font-mono outline-none focus:border-primary" placeholder="Latitude (ex: 48.8566)">
+                        <input type="number" step="any" id="longitude" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2 text-sm font-mono outline-none focus:border-primary" placeholder="Longitude (ex: 2.3522)">
+                    </div>
+                    <div id="gps-feedback" class="text-[10px] text-green-600 dark:text-green-400 mt-1 h-4"></div>
                 </div>
 
                 <div class="pt-2 grid grid-cols-2 gap-3">
@@ -720,9 +723,10 @@
                 document.getElementById('place-form').reset();
                 document.getElementById('place-id').value = '';
                 document.getElementById('modal-title').innerText = "Ajouter un lieu";
-                document.getElementById('gps-coords-display').innerText = "Pas de GPS enregistré";
+                document.getElementById('gps-feedback').innerText = "";
+                document.getElementById('latitude').value = "";
+                document.getElementById('longitude').value = "";
                 document.getElementById('sous-type-container').classList.add('hidden'); // Reset sous-type
-                if(currentPosition) fillGPSForm();
             }
         }
 
@@ -731,15 +735,41 @@
         }
 
         function fillGPSForm() {
-            if (currentPosition) {
-                document.getElementById('latitude').value = currentPosition.lat;
-                document.getElementById('longitude').value = currentPosition.lon;
-                document.getElementById('gps-coords-display').innerText = `${currentPosition.lat.toFixed(4)}, ${currentPosition.lon.toFixed(4)}`;
-                document.getElementById('gps-coords-display').className = "text-green-600 dark:text-green-400 font-mono text-sm";
-            } else {
-                showToast("Activez le GPS d'abord", "error");
-                updateLocation();
+            const feedback = document.getElementById('gps-feedback');
+            
+            // Feedback visuel
+            feedback.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Recherche...';
+            feedback.className = "text-[10px] text-yellow-600 dark:text-yellow-400 mt-1 h-4 animate-pulse";
+
+            if (!navigator.geolocation) {
+                showToast("GPS non supporté", "error");
+                feedback.innerText = "GPS non supporté";
+                return;
             }
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    // Mise à jour de la variable globale
+                    currentPosition = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                    
+                    // Remplissage des champs visibles
+                    document.getElementById('latitude').value = currentPosition.lat.toFixed(6);
+                    document.getElementById('longitude').value = currentPosition.lon.toFixed(6);
+                    
+                    // Feedback
+                    feedback.innerText = "Position actualisée avec succès";
+                    feedback.className = "text-[10px] text-green-600 dark:text-green-400 mt-1 h-4";
+                    
+                    showToast("Position GPS capturée", "success");
+                },
+                (err) => {
+                    console.error(err);
+                    feedback.innerText = "Erreur GPS";
+                    feedback.className = "text-[10px] text-red-500 mt-1 h-4";
+                    showToast("Échec géolocalisation", "error");
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
         }
 
         function handleFormSubmit(e) {
@@ -796,15 +826,8 @@
             document.getElementById('commentaire').value = p.commentaire;
             document.getElementById('latitude').value = p.latitude || '';
             document.getElementById('longitude').value = p.longitude || '';
+            document.getElementById('gps-feedback').innerText = "";
             
-            if(p.latitude) {
-                document.getElementById('gps-coords-display').innerText = `${p.latitude.toFixed(4)}, ${p.longitude.toFixed(4)}`;
-                document.getElementById('gps-coords-display').className = "text-blue-600 font-mono text-sm";
-            } else {
-                 document.getElementById('gps-coords-display').innerText = "Pas de GPS";
-                 document.getElementById('gps-coords-display').className = "text-gray-500";
-            }
-
             document.getElementById('modal-title').innerText = "Modifier";
             openModal(true);
         }
